@@ -1,46 +1,45 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-declare global {
-  interface Window {
-    gapi: any;
-  }
-}
-
-const clientId = "YOUR_CLIENT_ID.apps.googleusercontent.com";
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+console.log("Using Client ID:", clientId);
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
 
+  // Memoize the handleCredentialResponse function to prevent it from being recreated on every render
+  const handleCredentialResponse = useCallback((response: any) => {
+    console.log("Encoded JWT ID token: " + response.credential);
+    navigate('/account');
+  }, [navigate]); // `navigate` is a dependency of this useCallback
+
   useEffect(() => {
-    const initClient = () => {
-      window.gapi.client.init({
-        clientId: clientId,
-        scope: 'email',
-      }).then(() => {
-        window.gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-        updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
+    // Dynamically load the Google Identity Services library
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.onload = () => {
+      // Initialize the Google Identity Services library with the memoized callback
+      window.google.accounts.id.initialize({
+        client_id: clientId as string,
+        callback: handleCredentialResponse, // Use the memoized callback here
       });
+      // Render the Google sign-in button
+      window.google.accounts.id.renderButton(
+        document.getElementById('signInDiv'), // Ensure this div exists in the component's return statement
+        { theme: 'outline', size: 'large' }  // Customization attributes
+      );
     };
+    document.body.appendChild(script);
 
-    window.gapi.load('client:auth2', initClient);
-
-    const updateSigninStatus = (isSignedIn: boolean) => {
-      if (isSignedIn) {
-        const profile = window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
-        sessionStorage.setItem("userEmail", profile.getEmail());
-        navigate('/account');
-      }
+    // Cleanup function to remove the script when the component unmounts
+    return () => {
+      document.body.removeChild(script);
     };
-  }, [navigate]);
-
-  const handleSignInClick = () => {
-    window.gapi.auth2.getAuthInstance().signIn();
-  };
+  }, [handleCredentialResponse]); // Depend on the memoized handleCredentialResponse function
 
   return (
     <div>
-      <button onClick={handleSignInClick}>Login with Google</button>
+      <div id="signInDiv"></div> {/* Sign-in button will be rendered here */}
     </div>
   );
 };
