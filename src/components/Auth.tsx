@@ -47,18 +47,7 @@ const Auth: React.FC = () => {
     };
   }, [navigate]);
 
-  // Logout function
-  const logout = () => {
-    // Clear user session data
-    sessionStorage.removeItem("userEmail");
-    
-    // Use Google's API to sign the user out
-    google.accounts.id.disableAutoSelect();
-
-    // Redirect or perform some action after logout
-    navigate('/');
-    console.log('User logged out');
-  };
+  
 
   return (
     <div>
