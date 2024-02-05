@@ -1,7 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '838062661118-ktim79hu56fe6ot7c8cj3spjf81oiec4.apps.googleusercontent.com';
+
 console.log("Using Client ID:", clientId);
 
 const Auth: React.FC = () => {
