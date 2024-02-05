@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode'; // Import jwtDecode function for decodin
 // Declare the global google variable provided by the Google Identity Services library
 declare const google: any; 
 // Define the Google client ID, either from environment variables or hardcoded
-const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID; 
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '838062661118-ktim79hu56fe6ot7c8cj3spjf81oiec4.apps.googleusercontent.com'; 
 
 const Auth: React.FC = () => {
   const navigate = useNavigate(); // Hook to navigate between routes
