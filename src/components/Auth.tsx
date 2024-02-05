@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Import jwtDecode function for decoding JWT tokens
+import { jwtDecode } from 'jwt-decode'; // Incorrect import causing the issue
+
+
 
 // Declare the global google variable provided by the Google Identity Services library
 declare const google: any; 
@@ -11,44 +13,53 @@ const Auth: React.FC = () => {
   const navigate = useNavigate(); // Hook to navigate between routes
 
   useEffect(() => {
+    console.log('Initializing Google Identity Services...');
     const script = document.createElement('script'); // Create a new script element
-    // Set the source to the Google Identity Services library
     script.src = 'https://accounts.google.com/gsi/client'; 
-    script.async = true; // Script should be loaded Asynchronously
-    // Append the script to the body of the document to load it
+    script.async = true; 
     document.body.appendChild(script); 
 
-    // npm install --save-dev @types/jwt-decode
-    // Decode the JWT ID token and assert its structure to include an email field
     const handleCredentialResponse = (response: any) => {
-      const decoded = jwtDecode(response.credential) as { email: string }; 
-      const userEmail = decoded.email; // Extract the email from the decoded token
-      sessionStorage.setItem("userEmail", userEmail); // Store the email in sessionStorage for later use
-      navigate('/account'); // Navigate to the account page after successful login
-    };
-
-    // Right after script is loaded that will happen:
-    script.onload = () => { 
-      google.accounts.id.initialize({ // Initialize the Google Identity Services library with the client ID and callback function
-        client_id: clientId,
-        callback: handleCredentialResponse
-      });
-      
-      // Google sign-in button
-      google.accounts.id.renderButton( 
-        document.getElementById('signInDiv'), // Specify the div where the button should be rendered
-        { theme: 'outline', size: 'large' } // Button customization options
-      );
-    };
-
-    // Cleanup function that runs when the component unmounts
-    return () => { 
-      document.body.removeChild(script); // Remove the script element from the document
-      if (google.accounts && google.accounts.id && typeof google.accounts.id.cancel === 'function') { // Check if the cancel method is available
-        google.accounts.id.cancel(); // Cancel the Google Identity Services to clean up resources
+      console.log('Google Identity Services response received:', response);
+      try {
+        const decoded = jwtDecode(response.credential) as { email: string };
+        console.log('Decoded JWT:', decoded);
+        const userEmail = decoded.email;
+        sessionStorage.setItem("userEmail", userEmail);
+        console.log('User email set in sessionStorage:', userEmail);
+        navigate('/account');
+      } catch (error) {
+        console.error('Error decoding JWT or navigating:', error);
       }
     };
-  }, [navigate]); // useEffect dependency array with navigate to ensure it re-runs if navigate changes
+
+    script.onload = () => { 
+      console.log('Google Identity Services script loaded, initializing button...');
+      try {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleCredentialResponse
+        });
+
+        google.accounts.id.renderButton(
+          document.getElementById('signInDiv'),
+          { theme: 'outline', size: 'large' }
+        );
+        console.log('Google sign-in button rendered.');
+      } catch (error) {
+        console.error('Error initializing Google sign-in button:', error);
+      }
+    };
+
+    return () => { 
+      console.log('Cleaning up Google Identity Services...');
+      document.body.removeChild(script);
+      if (google.accounts && google.accounts.id && typeof google.accounts.id.cancel === 'function') {
+        google.accounts.id.cancel();
+        console.log('Google Identity Services cleaned up.');
+      }
+    };
+  }, [navigate]);
 
   return (
     <div>
@@ -57,4 +68,4 @@ const Auth: React.FC = () => {
   );
 };
 
-export default Auth; // Export the Auth component for use in other application components
+export default Auth;
