@@ -1,46 +1,53 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
-const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '838062661118-ktim79hu56fe6ot7c8cj3spjf81oiec4.apps.googleusercontent.com';
 
-console.log("Using Client ID:", clientId);
+declare const google: any;
+
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || 'your-client-id.apps.googleusercontent.com';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
 
-  // Memoize the handleCredentialResponse function to prevent it from being recreated on every render
-  const handleCredentialResponse = useCallback((response: any) => {
-    console.log("Encoded JWT ID token: " + response.credential);
-    navigate('/account');
-  }, [navigate]); // `navigate` is a dependency of this useCallback
-
   useEffect(() => {
-    // Dynamically load the Google Identity Services library
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
-    script.onload = () => {
-      // Initialize the Google Identity Services library with the memoized callback
-      window.google.accounts.id.initialize({
-        client_id: clientId as string,
-        callback: handleCredentialResponse, // Use the memoized callback here
-      });
-      // Render the Google sign-in button
-      window.google.accounts.id.renderButton(
-        document.getElementById('signInDiv'), // Ensure this div exists in the component's return statement
-        { theme: 'outline', size: 'large' }  // Customization attributes
-      );
-    };
+    script.async = true;
     document.body.appendChild(script);
 
-    // Cleanup function to remove the script when the component unmounts
+    const handleCredentialResponse = (response: any) => {
+        const decoded = jwtDecode(response.credential) as { email: string }; // Assert the type
+        const userEmail = decoded.email;
+        sessionStorage.setItem("userEmail", userEmail);
+        navigate('/account');
+      };
+      
+      
+
+    script.onload = () => {
+      google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleCredentialResponse
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById('signInDiv'),
+        { theme: 'outline', size: 'large' }
+      );
+    };
+
     return () => {
       document.body.removeChild(script);
+      if (google.accounts && google.accounts.id && typeof google.accounts.id.cancel === 'function') {
+        google.accounts.id.cancel();
+      }
     };
-  }, [handleCredentialResponse]); // Depend on the memoized handleCredentialResponse function
+  }, [navigate]);
 
   return (
     <div>
-      <div id="signInDiv"></div> {/* Sign-in button will be rendered here */}
+      <div id="signInDiv"></div>
     </div>
   );
 };
