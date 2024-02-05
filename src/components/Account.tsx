@@ -15,7 +15,7 @@ const Account: React.FC = () => {
 
   const logout = () => {
     sessionStorage.removeItem("userEmail");
-    navigate('/'); // Redirect to the login page after logout
+    navigate('/'); // After logout - redirect to the login page
     console.log('User logged out');
   };
 
@@ -23,7 +23,7 @@ const Account: React.FC = () => {
   return (
     <div>
       <h2>Account Page</h2>
-      <p>User Email: {userEmail || "No Email Found"}</p>
+      <p>User Email: {userEmail || "No Email Found. Please login"}</p>
       <button onClick={logout} style={{ marginTop: '20px' }}>Logout</button>
     </div>
   );

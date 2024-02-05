@@ -51,7 +51,7 @@ const Auth: React.FC = () => {
 
   return (
     <div>
-      <div id="signInDiv"></div> {/* Google sign-in button */}
+      <div id="signInDiv"></div> {/* sign-in button from Google*/}
      
     </div>
   );
