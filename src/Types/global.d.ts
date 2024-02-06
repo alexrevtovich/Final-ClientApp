@@ -1,19 +1,22 @@
 // In src/types/global.d.ts
 declare global {
   interface Window {
-    google: any;
+    google: any; // Existing declaration for Google
+    map: atlas.Map; // Add this line to declare a 'map' property of type 'atlas.Map'
   }
 }
 
-// Declare module for azure-maps-control with basic structure
 declare module 'azure-maps-control' {
-  // Example of declaring a Map class with minimal type information
   export class Map {
     constructor(container: string | HTMLElement, options?: any);
-    // Add methods and properties as needed
+  }
+  export namespace control {
   }
 
-  // add more exports here as needed, such as controls, layers, etc.
+  export namespace layer {
+  }
+
+  // Include any other exports as needed here
 }
 
 export {};
