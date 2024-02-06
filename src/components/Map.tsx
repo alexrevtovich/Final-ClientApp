@@ -21,7 +21,7 @@ const Map: React.FC = () => {
     const map = new atlas.Map(mapRef.current, {
       authOptions: {
         authType: atlas.AuthenticationType.subscriptionKey,
-        subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY
+        subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs'
       },
       center: [-95.4028, 29.7174],
       zoom: 15,
