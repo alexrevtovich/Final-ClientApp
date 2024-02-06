@@ -59,22 +59,48 @@ const Map: React.FC = () => {
     setInputValue(e.target.value);
   };
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setError(null);
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+    setError(null); // Reset any previous error message
+  
     try {
       const stationsData = await fetchStations(inputValue);
       setStationData(stationsData);
+  
+      if (stationsData.length > 0) {
+        const firstStation = stationsData[0]; // Assume you want to center on the first station
+  
+        // Ensure the map instance is available and ready
+        if (mapInstanceRef.current) {
+          // Center the map on the coordinates of the first station
+          mapInstanceRef.current.setCamera({
+            center: [firstStation.longitude, firstStation.latitude],
+            zoom: 15 // Adjust zoom level as needed
+          });
+  
+          // Optionally, add pins to the map for each station
+          addPinsToMap(stationsData, mapInstanceRef.current);
+        }
+      } else {
+        setError('No stations found for the provided location.'); // Handle case where no stations are returned
+      }
     } catch (error) {
       console.error('Error fetching stations:', error);
       setError('Failed to fetch station data. Please try again.');
+    }
+  };
+  
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e as unknown as React.MouseEvent<HTMLButtonElement>); // Cast the event type to match handleSubmit's expected type
     }
   };
 
   return (
     <>
       <div>
-        <input type="text" value={inputValue} onChange={handleInputChange} placeholder="Enter location" aria-label="Location Input" />
+        <input type="text" value={inputValue} onChange={handleInputChange} placeholder="Enter location" onKeyDown={handleKeyDown} aria-label="Location Input" />
         <button onClick={handleSubmit}>Go</button>
       </div>
       <div ref={mapRef} style={{ width: '100%', height: '400px' }} />
