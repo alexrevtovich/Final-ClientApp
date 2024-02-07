@@ -99,6 +99,13 @@ const Map: React.FC = () => {
     }
   };
 
+  const handleStationSelect = (station: StationData) => {
+    // Placeholder for whatever action you want to take when a station is selected.
+    console.log(station.station_name + " selected");
+    // For example, you might navigate to a station detail page or set selected station in state.
+  };
+  
+
   return (
     <>
       <div>
@@ -114,9 +121,19 @@ const Map: React.FC = () => {
       </div>
       <div ref={mapRef} className="map-container" />
       {error && <p className="error-message">{error}</p>}
-      <div>{stationData && <pre>{JSON.stringify(stationData, null, 2)}</pre>}</div>
+      <div>
+        {stationData.map((station, index) => (
+          <div key={index} className="station-info">
+            <p>Station Name: {station.station_name}</p>
+            <p>Connector Types: {station.ev_connector_types.join(', ')}</p>
+            <p>Distance: {station.distance.toFixed(2)} miles</p>
+            <button onClick={() => handleStationSelect(station)}>Select</button>
+          </div>
+        ))}
+      </div>
     </>
   );
+  
 };
 
 export default Map;
