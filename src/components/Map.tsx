@@ -50,7 +50,7 @@ const Map: React.FC = () => {
       mapInstanceRef.current?.dispose();
       mapInstanceRef.current = null;
     };
-  }, []);
+  }, [myLocation]);
 
   useEffect(() => {
     const fetchAndSetAddress = async () => {
