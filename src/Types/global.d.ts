@@ -1,4 +1,4 @@
-// In src/types/global.d.ts
+//file-helper for typesctipt
 declare global {
   interface Window {
     google: any; // Existing declaration for Google

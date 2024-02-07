@@ -39,27 +39,42 @@
 
 .navbar {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* Center buttons horizontally */
+  align-items: center; /* Align buttons vertically */
+  flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
   padding: 10px;
   background-color: #f0f0f0;
 }
 
 .nav-button {
-  padding: 10px 20px; /* Adjust padding as needed */
-  margin: 0 10px; /* Adds space between buttons */
-  min-width: 150px; /* Ensures buttons are the same width */
-  cursor: pointer; /* Changes cursor to pointer on hover */
+  padding: 10px;
+  margin: 5px; /* Provide some space between buttons */
+  width: auto; /* Let the width be determined by the content and padding */
+  max-width: 200px; /* Maximum width for each button */
+  flex: 0 1 auto; /* Do not grow, but allow shrink, and base width on content */
+  cursor: pointer;
+  text-align: center;
 }
 
-/* You can add additional styles for hover effects, etc. */
 .nav-button:hover {
-  background-color: #e0e0e0; /* Example hover effect */
+  background-color: #e0e0e0; /* Hover effect */
+}
+
+@media screen and (max-width: 600px) {
+  .navbar {
+    flex-direction: column; /* Stack buttons vertically on small screens */
+  }
+
+  .nav-button {
+    padding: 15px 30px; /* Larger padding for bigger tap targets */
+    margin: 10px 0; /* Adjusted margin for vertical layout */
+    width: 80%; /* Button width fills more of the screen */
+    max-width: none; /* Ignore max-width on smaller screens */
+  }
 }
 
 /* Map container styles */
 .map-container {
   width: 100%; /* Full width of its parent container */
-  height: 70vh; /* 50% of the viewport height */
+  height: 70vh; /* 70% of the viewport height */
 }
-
