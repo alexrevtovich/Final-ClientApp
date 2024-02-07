@@ -71,7 +71,7 @@
   .nav-button {
     padding: 10x; /* Larger padding for bigger tap targets */
     
-    width: 15%; /* Button width fills more of the screen */
+    width: 30%; /* Button width fills more of the screen */
     text-align: center;
   }
 }
