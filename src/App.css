@@ -49,7 +49,8 @@
 .nav-button {
   padding: 10px;
   margin: 5px; /* Provide some space between buttons */
-  width: 20%; /* Let the width be determined by the content and padding */
+  width: 15%; /* Let the width be determined by the content and padding */
+  max-width: 20%;
 
   flex: 0 1 auto; /* Do not grow, but allow shrink, and base width on content */
   cursor: pointer;
@@ -68,10 +69,9 @@
   }
 
   .nav-button {
-    padding: 15px 30px; /* Larger padding for bigger tap targets */
-    margin: 10px 0; /* Adjusted margin for vertical layout */
-    width: 25%; /* Button width fills more of the screen */
-    max-width: none; /* Ignore max-width on smaller screens */
+    padding: 10x; /* Larger padding for bigger tap targets */
+    
+    width: 15%; /* Button width fills more of the screen */
     text-align: center;
   }
 }
