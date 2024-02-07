@@ -56,3 +56,10 @@
 .nav-button:hover {
   background-color: #e0e0e0; /* Example hover effect */
 }
+
+/* Map container styles */
+.map-container {
+  width: 100%; /* Full width of its parent container */
+  height: 70vh; /* 50% of the viewport height */
+}
+
