@@ -7,8 +7,6 @@ import { addPinsToMap } from '../utils/pinsonmap';
 import { StationData } from '../utils/stations';
 import reverseGeocode from '../utils/reverse';
 
-const myLocation = useRef<[number, number]>([-95.4028, 29.7174]);
-
 const Map: React.FC = () => {
   const navigate = useNavigate();
   const mapRef = useRef<HTMLDivElement>(null);
@@ -17,8 +15,8 @@ const Map: React.FC = () => {
   const [stationData, setStationData] = useState<StationData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-
-  
+  // my location is hardcoded for now
+  const myLocation = useRef<[number, number]>([-95.4028, 29.7174]);
 
   useEffect(() => {
     if (!sessionStorage.getItem('userEmail')) {
