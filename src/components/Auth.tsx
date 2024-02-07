@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode'; // Incorrect import causing the issue
 
+
 // Declare the global google variable provided by the Google Identity Services library
 declare const google: any;
 
