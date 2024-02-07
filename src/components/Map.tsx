@@ -6,17 +6,18 @@ import { fetchStations } from '../utils/stations';
 import { addPinsToMap } from '../utils/pinsonmap';
 import { StationData } from '../utils/stations';
 import reverseGeocode from '../utils/reverse';
+import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 
 const Map: React.FC = () => {
   const navigate = useNavigate();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<atlas.Map | null>(null);
+  const datasourceRef = useRef<atlas.source.DataSource | null>(null); // Datasource reference
   const [inputValue, setInputValue] = useState('');
   const [stationData, setStationData] = useState<StationData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // my location is hardcoded for now
-  const myLocation = useRef<[number, number]>([-95.4028, 29.7174]);
+  const myLocation = useRef<[number, number]>([-95.4028, 29.7174]).current;  // is a constant for now
 
   useEffect(() => {
     if (!sessionStorage.getItem('userEmail')) {
@@ -32,12 +33,18 @@ const Map: React.FC = () => {
         authType: atlas.AuthenticationType.subscriptionKey,
         subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs',
       },
-      center: myLocation.current,
+      center: myLocation,
       zoom: 15,
       style: 'road',
     });
 
-    mapInstanceRef.current = map;
+    map.events.add('ready', () => {
+      mapInstanceRef.current = map;
+      datasourceRef.current = new atlas.source.DataSource(); // Initialize datasource
+      map.sources.add(datasourceRef.current);
+
+      // Additional setup can go here
+    });
 
     return () => {
       mapInstanceRef.current?.dispose();
@@ -47,19 +54,12 @@ const Map: React.FC = () => {
 
   useEffect(() => {
     const fetchAndSetAddress = async () => {
-      const address = await reverseGeocode(myLocation.current);
+      const address = await reverseGeocode(myLocation);
       setInputValue(address);
     };
 
     fetchAndSetAddress();
   }, []);
-
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (map && stationData.length > 0) {
-      addPinsToMap(stationData, map);
-    }
-  }, [stationData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -86,7 +86,6 @@ const Map: React.FC = () => {
       setError('Failed to fetch station data. Please try again.');
     }
   };
-  
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent) => {
     e.preventDefault();
@@ -99,11 +98,28 @@ const Map: React.FC = () => {
     }
   };
 
-  const handleStationSelect = (station: StationData) => {
-    // Placeholder for whatever action you want to take when a station is selected.
-    console.log(station.station_name + " selected");
-    // For example, you might navigate to a station detail page or set selected station in state.
-  };
+  const handleStationSelect = async (station: StationData) => {
+    if (!mapInstanceRef.current || !datasourceRef.current) {
+        console.error("Map instance or datasource is not available");
+        return;
+    }
+
+    try {
+        // Fetch route directions from myLocation to the selected station
+        const route = await getRouteDirections(myLocation, [station.latitude, station.longitude]);
+
+
+        // Clear existing data to remove previous routes
+        datasourceRef.current.clear();
+
+        // Render the fetched route on the map
+        renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
+    } catch (error) {
+        console.error("Error fetching or rendering route:", error);
+        setError("Failed to display route. Please try again.");
+    }
+};
+
   
 
   return (
