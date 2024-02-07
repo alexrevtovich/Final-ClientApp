@@ -49,8 +49,8 @@
 .nav-button {
   padding: 10px;
   margin: 5px; /* Provide some space between buttons */
-  width: auto; /* Let the width be determined by the content and padding */
-  max-width: 200px; /* Maximum width for each button */
+  width: 20%; /* Let the width be determined by the content and padding */
+
   flex: 0 1 auto; /* Do not grow, but allow shrink, and base width on content */
   cursor: pointer;
   text-align: center;
@@ -62,13 +62,15 @@
 
 @media screen and (max-width: 600px) {
   .navbar {
-    flex-direction: column; /* Stack buttons vertically on small screens */
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center; /* Align buttons vertically */
   }
 
   .nav-button {
     padding: 15px 30px; /* Larger padding for bigger tap targets */
     margin: 10px 0; /* Adjusted margin for vertical layout */
-    width: 80%; /* Button width fills more of the screen */
+    width: 25%; /* Button width fills more of the screen */
     max-width: none; /* Ignore max-width on smaller screens */
   }
 }
