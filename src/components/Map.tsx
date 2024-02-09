@@ -39,19 +39,19 @@ const Map: React.FC = () => {
       const map = new atlas.Map(mapRef.current, {
         authOptions: {
           authType: atlas.AuthenticationType.subscriptionKey,
-        subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs',
-      },
-      center: myLocation, // Initial center, will be updated when myLocation is fetched
+          subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs',
+        },
+        center: myLocation, // Initial center, will be updated when myLocation is fetched
         zoom: 15,
         style: 'road',
       });
 
-      map.events.add('ready', async () => { // Mark this function as async
+      map.events.add('ready', async () => {
         mapInstanceRef.current = map;
         datasourceRef.current = new atlas.source.DataSource();
         map.sources.add(datasourceRef.current);
-      
-        //Async fetch stations around default location
+        
+        // Async fetch stations around default location
         const myLocationStr = `${myLocation[0]},${myLocation[1]}`;
         await fetchAndDisplayStations(myLocationStr);
       });
@@ -108,7 +108,7 @@ const Map: React.FC = () => {
           zoom: 15,
         });
   
-        addPinsToMap(stationsData, mapInstanceRef.current);
+        addPinsToMap(stationsData, mapInstanceRef.current, handleStationSelect);
       } else {
         setError('No stations found for the provided location.');
       }
@@ -185,7 +185,6 @@ const Map: React.FC = () => {
       </div>
     </>
   );
-  
 };
 
 export default Map;
