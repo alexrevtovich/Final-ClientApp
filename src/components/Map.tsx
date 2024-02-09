@@ -72,6 +72,7 @@ const Map: React.FC = () => {
       }
     }
   }, [myLocation]); // Depend on myLocation
+  
 
   useEffect(() => {
     if (mapInstanceRef.current) {

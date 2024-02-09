@@ -29,12 +29,7 @@ const Account: React.FC = () => {
     getMyLocation(setMyLocation); // Fetch user's location
   }, [navigate, userEmail]);
 
-  const logout = () => {
-    sessionStorage.removeItem("userEmail");
-    navigate('/');
-    console.log('User logged out');
-  };
-
+  
   return (
     <div className="account-container">
       <h2>Account Page</h2>
