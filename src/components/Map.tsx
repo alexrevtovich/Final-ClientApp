@@ -72,7 +72,7 @@ const Map: React.FC = () => {
         zoom: 15,
         style: 'road',
       });
-
+  
       // Add event listener for when the map is ready
       map.events.add('ready', async () => {
         mapInstanceRef.current = map;
@@ -85,7 +85,8 @@ const Map: React.FC = () => {
         await fetchAndDisplayStations(myLocationStr);
       });
     }
-  }, [myLocation]);
+  }, [myLocation, fetchAndDisplayStations]);
+  
 
   // Update map's camera when myLocation changes
   useEffect(() => {
