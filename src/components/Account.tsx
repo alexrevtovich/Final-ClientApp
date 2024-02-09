@@ -7,7 +7,9 @@ const Account: React.FC = () => {
   const navigate = useNavigate();
   const userEmail = sessionStorage.getItem("userEmail");
   const [userInfo, setUserInfo] = useState({ username: '', email: '', zipcode: '' });
-  const [myLocation, setMyLocation] = useState('Fetching location...');
+  // Initialize myLocation as a tuple with a default location OEDK
+  const [myLocation, setMyLocation] = useState<[number, number]>([0, 0]); // Use a sensible default like [0, 0]
+
 
   useEffect(() => {
     if (!userEmail) {
@@ -39,8 +41,9 @@ const Account: React.FC = () => {
       <div className="account-info">Hello {userInfo.username}</div>
       <div className="account-info">Your email is: {userInfo.email}</div>
       <div className="account-info">Your zipcode is: {userInfo.zipcode}</div>
-      <div className="account-info">You are here: {myLocation}</div> 
-      <button onClick={logout} className="logout-button">Logout</button>
+      <div className="account-info">
+        You are here: Latitude: {myLocation[0]}, Longitude: {myLocation[1]}
+      </div>
     </div>
   );
 };

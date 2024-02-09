@@ -1,5 +1,5 @@
 const reverseGeocode = async (coordinates: [number, number]): Promise<string> => {
-    const [longitude, latitude] = coordinates;
+    const [latitude, longitude] = coordinates;
     const subscriptionKey = process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs';
     const url = `https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0&query=${latitude},${longitude}&subscription-key=${subscriptionKey}`;
   

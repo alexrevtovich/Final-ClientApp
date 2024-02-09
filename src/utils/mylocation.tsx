@@ -1,18 +1,17 @@
-const getMyLocation = (setLocation: React.Dispatch<React.SetStateAction<string>>) => {
+const getMyLocation = (setLocation: React.Dispatch<React.SetStateAction<[number, number]>>) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const location = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
-          setLocation(location);
+          setLocation([position.coords.latitude, position.coords.longitude]);
         },
         (error) => {
           console.error('Error getting location:', error);
-          setLocation('Unable to retrieve location');
+          // You might want to set a default location or handle the error differently here
         }
       );
     } else {
       console.log('Geolocation is not supported by this browser.');
-      setLocation('Geolocation not supported');
+      // Handle the case where geolocation is not supported
     }
   };
   
