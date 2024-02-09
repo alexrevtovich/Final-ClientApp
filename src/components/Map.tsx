@@ -42,7 +42,9 @@ const Map: React.FC = () => {
       console.error('Error fetching stations:', error);
       setError('Failed to fetch station data. Please try again.');
     }
-  }, [myLocation]);
+  }, []); // Remove myLocation from the dependency array
+
+
 
   // Fetch the user's location and set it to state
   useEffect(() => {
