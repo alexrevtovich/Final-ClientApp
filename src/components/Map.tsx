@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as atlas from 'azure-maps-control';
 import 'azure-maps-control/dist/atlas.min.css';
 import { useNavigate } from 'react-router-dom';
@@ -20,8 +20,8 @@ const Map: React.FC = () => {
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]);
   const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
 
-  // Define fetchAndDisplayStations function outside of useEffect
-  const fetchAndDisplayStations = async (location: string) => {
+  // Define fetchAndDisplayStations function using useCallback
+  const fetchAndDisplayStations = useCallback(async (location: string) => {
     setError(null);
     try {
       const stationsData = await fetchStations(location);
@@ -42,7 +42,7 @@ const Map: React.FC = () => {
       console.error('Error fetching stations:', error);
       setError('Failed to fetch station data. Please try again.');
     }
-  };
+  }, [myLocation]);
 
   // Fetch the user's location and set it to state
   useEffect(() => {
@@ -72,7 +72,7 @@ const Map: React.FC = () => {
         zoom: 15,
         style: 'road',
       });
-  
+
       // Add event listener for when the map is ready
       map.events.add('ready', async () => {
         mapInstanceRef.current = map;
@@ -86,7 +86,6 @@ const Map: React.FC = () => {
       });
     }
   }, [myLocation, fetchAndDisplayStations]);
-  
 
   // Update map's camera when myLocation changes
   useEffect(() => {
