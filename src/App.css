@@ -42,13 +42,13 @@
   justify-content: center; /* Center buttons horizontally */
   align-items: center; /* Align buttons vertically */
   flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
-  padding: 10px;
+  padding: 0px;
   background-color: #f0f0f0;
 }
 
 .nav-button {
   padding: 10px;
-  margin: 5px; /* Provide some space between buttons */
+  margin: 1px; /* Provide some space between buttons */
   width: 15%; /* Let the width be determined by the content and padding */
   max-width: 20%;
 
@@ -80,4 +80,15 @@
 .map-container {
   width: 100%; /* Full width of its parent container */
   height: 70vh; /* 70% of the viewport height */
+}
+
+.account-container {
+  text-align: center; /* Center-align text */
+  padding: 20px; /* Add some padding for better spacing */
+  margin: auto; /* Center the container itself if it has a set width */
+  max-width: 600px; /* Optional: Set a max-width for the container */
+}
+
+.account-info {
+  margin: 10px 0; /* Add some vertical spacing between account info lines */
 }
