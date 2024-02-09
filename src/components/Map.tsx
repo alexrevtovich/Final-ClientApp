@@ -56,7 +56,7 @@ const Map: React.FC = () => {
         await fetchAndDisplayStations(myLocationStr);
       });
     }
-  }, []); // Empty dependency array ensures this effect runs only once
+  }, [myLocation]); // Empty dependency array ensures this effect runs only once
 
   useEffect(() => {
     // This useEffect updates the map's center to myLocation once it's fetched
