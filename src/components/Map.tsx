@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as atlas from 'azure-maps-control';
 import 'azure-maps-control/dist/atlas.min.css';
@@ -19,6 +18,31 @@ const Map: React.FC = () => {
   const [stationData, setStationData] = useState<StationData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]);
+  const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
+
+  // Define fetchAndDisplayStations function outside of useEffect
+  const fetchAndDisplayStations = async (location: string) => {
+    setError(null);
+    try {
+      const stationsData = await fetchStations(location);
+      setStationData(stationsData);
+
+      if (stationsData.length > 0 && mapInstanceRef.current) {
+        mapInstanceRef.current.setCamera({
+          center: [stationsData[0].longitude, stationsData[0].latitude],
+          zoom: 15,
+        });
+
+        // Pass the current location to addPinsToMap
+        addPinsToMap(stationsData, mapInstanceRef.current, handleStationSelect, myLocationRef.current);
+      } else {
+        setError('No stations found for the provided location.');
+      }
+    } catch (error) {
+      console.error('Error fetching stations:', error);
+      setError('Failed to fetch station data. Please try again.');
+    }
+  };
 
   // Fetch the user's location and set it to state
   useEffect(() => {
@@ -59,11 +83,6 @@ const Map: React.FC = () => {
         // Async fetch stations around default location
         const myLocationStr = `${myLocation[0]},${myLocation[1]}`;
         await fetchAndDisplayStations(myLocationStr);
-
-        
-        // Pass the current location to addPinsToMap
-        addPinsToMap(stationData, mapInstanceRef.current, handleStationSelect, myLocation);
-
       });
     }
   }, [myLocation]);
@@ -93,39 +112,12 @@ const Map: React.FC = () => {
     setInputValue(e.target.value);
   };
 
-  // Fetch and display stations based on input value
-const fetchAndDisplayStations = async (location: string) => {
-  setError(null);
-  try {
-    const stationsData = await fetchStations(location);
-    setStationData(stationsData);
-
-    if (stationsData.length > 0 && mapInstanceRef.current) {
-      mapInstanceRef.current.setCamera({
-        center: [stationsData[0].longitude, stationsData[0].latitude],
-        zoom: 15,
-      });
-
-      // Pass the current location to addPinsToMap
-      addPinsToMap(stationsData, mapInstanceRef.current, handleStationSelect, myLocation);
-    } else {
-      setError('No stations found for the provided location.');
-    }
-  } catch (error) {
-    console.error('Error fetching stations:', error);
-    setError('Failed to fetch station data. Please try again.');
-  }
-};
-
-  
-
   // Handle form submission
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent) => {
     e.preventDefault();
     const locationStr = inputValue ? inputValue : `${myLocation[0]},${myLocation[1]}`;
     fetchAndDisplayStations(locationStr);
   };
-  
 
   // Handle key down event
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -134,26 +126,23 @@ const fetchAndDisplayStations = async (location: string) => {
       fetchAndDisplayStations(locationStr);
     }
   };
-  
 
   // Handle station selection
   const handleStationSelect = async (station: StationData, currentLocation: [number, number]) => {
     if (!mapInstanceRef.current || !datasourceRef.current) {
-        console.error("Map instance or datasource is not available");
-        return;
+      console.error("Map instance or datasource is not available");
+      return;
     }
 
     try {
-        const route = await getRouteDirections(currentLocation, [station.latitude, station.longitude]);
-        datasourceRef.current.clear();
-        renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
+      const route = await getRouteDirections(currentLocation, [station.latitude, station.longitude]);
+      datasourceRef.current.clear();
+      renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
     } catch (error) {
-        console.error("Error fetching or rendering route:", error);
-        setError("Failed to display route. Please try again.");
+      console.error("Error fetching or rendering route:", error);
+      setError("Failed to display route. Please try again.");
     }
   };
-
-  
 
   return (
     <>
@@ -181,7 +170,6 @@ const fetchAndDisplayStations = async (location: string) => {
           </div>
         ))}
       </div>
-
     </>
   );
 };
