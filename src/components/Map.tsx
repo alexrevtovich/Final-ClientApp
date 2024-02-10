@@ -49,7 +49,7 @@ const Map: React.FC = () => {
   // Fetch the user's location and set it to state
   useEffect(() => {
     getMyLocation((location) => {
-      setMyLocation(location);
+      setMyLocation(location || [29.7174, -95.4028]); // Provide default location if location is null
     });
   }, []);
 
