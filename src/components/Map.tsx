@@ -8,6 +8,7 @@ import { StationData } from '../utils/stations';
 import reverseGeocode from '../utils/reverse';
 import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 import getMyLocation from '../utils/mylocation';
+import Review from '../utils/review'; 
 
 const Map: React.FC = () => {
   const navigate = useNavigate();
@@ -146,6 +147,7 @@ const Map: React.FC = () => {
     }
   };
 
+
   return (
     <>
       <div>
@@ -167,8 +169,10 @@ const Map: React.FC = () => {
             <p>Station Name: {station.station_name}</p>
             <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
             <p>Distance: {station.distance?.toFixed(2)} miles</p>
-            {/* Pass myLocation as the second argument */}
+
             <button onClick={() => handleStationSelect(station, myLocation)}>Select</button>
+            <Review stationId={station.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
+            
           </div>
         ))}
       </div>
