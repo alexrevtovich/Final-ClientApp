@@ -12,6 +12,7 @@ export type StationData = {
   zip: string;
   ev_connector_types: string[];
   distance: number;
+  averageRating: string;
 };
 
 // Function to fetch and filter station data
@@ -31,8 +32,8 @@ export async function fetchStations(location: string): Promise<StationData[]> {
       street_address: station.street_address,
       zip: station.zip,
       ev_connector_types: station.ev_connector_types,
-
       distance: station.distance,
+      averageRating: "There is no rating yet" //this one is default value for rating
     }));
   } catch (error) {
     console.error('Failed to fetch station data:', error);
