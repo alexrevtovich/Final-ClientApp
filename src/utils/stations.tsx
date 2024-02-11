@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Define the type for the station data for better type safety
 export type StationData = {
-  
+  id: number;
   station_name: string;
   station_phone: string;
   latitude: number;
@@ -23,7 +23,7 @@ export async function fetchStations(location: string): Promise<StationData[]> {
     const response = await axios.get(`${API_URL}?api_key=${API_KEY}&location=${location}`);
     return response.data.fuel_stations.map((station: any) => ({
       
-      
+      id: station.id,
       station_name: station.station_name,
       station_phone: station.station_phone,
       latitude: station.latitude,
