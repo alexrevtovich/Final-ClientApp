@@ -22,8 +22,7 @@ export async function fetchStations(location: string): Promise<StationData[]> {
 
   try {
     const response = await axios.get(`${API_URL}?api_key=${API_KEY}&location=${location}`);
-    return response.data.fuel_stations.map((station: any) => ({
-      
+    let stations = response.data.fuel_stations.map((station: any) => ({
       id: station.id,
       station_name: station.station_name,
       station_phone: station.station_phone,
@@ -33,10 +32,31 @@ export async function fetchStations(location: string): Promise<StationData[]> {
       zip: station.zip,
       ev_connector_types: station.ev_connector_types,
       distance: station.distance,
-      averageRating: "There is no rating yet" //this one is default value for rating
+      averageRating: "There is no rating yet" // Default value
     }));
+
+    // Fetch average ratings for all stations
+    const ratingsPromises = stations.map(async (station: any) => {
+      try {
+        const ratingResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/getrating', {
+          stationId: station.id,
+        });
+
+        // Update the averageRating of the station if the response is successful
+        station.averageRating = ratingResponse.data.averageRating;
+      } catch (error) {
+        console.error(`Failed to fetch average rating for stationId ${station.id}:`, error);
+        // Keep the default averageRating if the request fails
+      }
+      return station;
+    });
+
+    // Wait for all rating requests to complete and update stations data
+    stations = await Promise.all(ratingsPromises);
+
+    return stations;
   } catch (error) {
     console.error('Failed to fetch station data:', error);
-    throw error; // Rethrow the error to be handled by the caller
+    throw error;
   }
 }
