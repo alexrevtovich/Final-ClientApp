@@ -113,17 +113,11 @@
 
 /* New styles for Google sign-in button */
 .google-signin-button {
-  display: flex; /* Use flex to center the button */
-  justify-content: center; /* Center button horizontally */
-  width: fit-content; /* Adjust width to fit content */
-  margin: auto; /* Center the button container */
+  display: flex;
+  justify-content: center;  /* Center the button horizontally */
+  margin: auto;             /* Auto margins on the sides to center the button in its container */
+  width: fit-content;       /* Let the button size be determined by its content */
 }
-
-.google-signin-button > div { /* Target the inner div of the Google button */
-  width: 40vmin; /* Match the width of the logo */
-  margin: 10px 0; /* Add some space above and below the button */
-}
-
 
 .logo-container {
   position: relative;
@@ -133,7 +127,7 @@
 .App-logo {
   height: auto;
   pointer-events: none;
-  max-width: 40%; /* Set the maximum width of the logo */
+  max-width: 25%; /* Set the maximum width of the logo */
   margin: auto; /* Center the logo horizontally */
   display: block; /* Make the image block-level to respect margin: auto */
 }
@@ -143,7 +137,7 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%); /* Center the small logo horizontally */
-  max-width: 40%; /* Optionally set the maximum width of the small logo */
+  max-width: 25%; /* Optionally set the maximum width of the small logo */
   height: auto; /* Maintain aspect ratio */
   /* Adjust the height or width as necessary to match the small logo size */
 }
@@ -170,10 +164,12 @@
 /* Centering the Google sign-in button */
 #signInDiv {
   display: flex;
-  left: 50%;
-  text-align: center;
-  width: 100%; /* Ensure the div takes up the full width */
+  justify-content: center;  /* Center children horizontally in the container */
+  align-items: center;      /* Center children vertically in the container */
+  width: 100%;              /* Take up the full width of its parent */
+  text-align: center;       /* Center the text inside the flex items (if any) */
 }
+
 
 /* Styles for review items */
 .review-item {
