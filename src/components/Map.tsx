@@ -64,7 +64,7 @@ const Map: React.FC = () => {
   // Fetch the user's location and set it to state
 useEffect(() => {
   getMyLocation(updateMyLocation); // Use updateMyLocation to ensure validation
-}, []);
+}, [updateMyLocation]);
 
 
   // Redirect to login if user email is not found in session storage
