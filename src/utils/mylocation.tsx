@@ -1,19 +1,27 @@
 const getMyLocation = (setLocation: React.Dispatch<React.SetStateAction<[number, number]>>) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
+  const defaultLocation: [number, number] = [29.7174, -95.4028];
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        if (typeof position.coords.latitude === 'number' && typeof position.coords.longitude === 'number') {
           setLocation([position.coords.latitude, position.coords.longitude]);
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          // You might want to set a default location or handle the error differently here
+        } else {
+          console.error('Invalid geolocation response');
+          setLocation(defaultLocation);
         }
-      );
-    } else {
-      console.log('Geolocation is not supported by this browser.');
-      // Handle the case where geolocation is not supported
-    }
-  };
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        setLocation(defaultLocation);
+      }
+    );
+  } else {
+    console.log('Geolocation is not supported by this browser.');
+    setLocation(defaultLocation);
+  }
+};
+
   
   export default getMyLocation;
   

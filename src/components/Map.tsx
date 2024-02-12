@@ -18,8 +18,22 @@ const Map: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [stationData, setStationData] = useState<StationData[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]);
+  const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]); //default value that is valid for sure
   const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
+
+  // Define updateMyLocation within the component
+  const updateMyLocation: React.Dispatch<React.SetStateAction<[number, number]>> = (value) => {
+    // If value is a function, call it with the current myLocation to get the new location
+    const newLocation = typeof value === 'function' ? value(myLocation) : value;
+  
+    if (typeof newLocation[0] === 'number' && typeof newLocation[1] === 'number') {
+      setMyLocation(newLocation);
+    } else {
+      console.error('Tried to set invalid myLocation:', newLocation);
+      // Optionally, revert to a default location
+      setMyLocation([29.7174, -95.4028]);
+    }
+  };
 
   // Define fetchAndDisplayStations function using useCallback
   const fetchAndDisplayStations = useCallback(async (location: string) => {
@@ -48,11 +62,10 @@ const Map: React.FC = () => {
 
 
   // Fetch the user's location and set it to state
-  useEffect(() => {
-    getMyLocation((location) => {
-      setMyLocation(location || [29.7174, -95.4028]); // Provide default location if location is null
-    });
-  }, []);
+useEffect(() => {
+  getMyLocation(updateMyLocation); // Use updateMyLocation to ensure validation
+}, []);
+
 
   // Redirect to login if user email is not found in session storage
   useEffect(() => {

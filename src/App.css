@@ -115,7 +115,7 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: auto;
   pointer-events: none;
   max-width: 40%; /* Set the maximum width of the logo */
   margin: auto; /* Center the logo horizontally */
