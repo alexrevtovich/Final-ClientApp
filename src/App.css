@@ -132,6 +132,20 @@
   /* Adjust the height or width as necessary to match the small logo size */
 }
 
+.logo-text {
+  text-align: center;
+  font-size: 60px; /* Example font size */
+  color: #1148c0; /* Example text color */
+  margin-top: 10px; /* Adjust spacing between the logo and the text */
+}
+.logo-text-small {
+  text-align: center;
+  font-size: 30px; /* Example font size */
+  color: #1148c0; /* Example text color */
+  margin-top: 1px; /* Adjust spacing between the logo and the text */
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -140,7 +154,8 @@
 /* Centering the Google sign-in button */
 #signInDiv {
   display: flex;
-  justify-content: center;
+  left: 50%;
+  text-align: center;
   width: 100%; /* Ensure the div takes up the full width */
 }
 

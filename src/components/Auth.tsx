@@ -56,6 +56,8 @@ const Auth: React.FC = () => {
         <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo_small.png`} alt="EVSpotter Small Logo" className="App-logo-small" />
         <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo.png`} alt="EVSpotter Logo" className="App-logo" />
       </div>
+      <p className="logo-text">EV Spotter</p>
+      <p className="logo-text-small">Power Your Journey With This Charging Stations Locator</p>
   
       <div id="signInDiv" className="google-signin-button"></div>
     </div>
