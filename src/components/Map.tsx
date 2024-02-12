@@ -102,7 +102,7 @@ const Map: React.FC = () => {
         await fetchAndDisplayStations(myLocationStr);
       });
     }
-  }, [myLocation]); // Depend on myLocation
+  }, [myLocation, fetchAndDisplayStations]); // Depend on myLocation and fetchAndDisplayStations
 
   // Update map's camera when myLocation changes
   useEffect(() => {
