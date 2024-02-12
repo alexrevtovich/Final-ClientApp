@@ -146,21 +146,28 @@ const Map: React.FC = () => {
   };
 
   // Handle station selection
-  const handleStationSelect = async (station: StationData, currentLocation: [number, number]) => {
-    if (!mapInstanceRef.current || !datasourceRef.current) {
-      console.error("Map instance or datasource is not available");
-      return;
-    }
+const handleStationSelect = async (station: StationData, currentLocation: [number, number]) => {
+  if (!mapInstanceRef.current || !datasourceRef.current) {
+    console.error("Map instance or datasource is not available");
+    return;
+  }
 
-    try {
-      const route = await getRouteDirections(currentLocation, [station.latitude, station.longitude]);
-      datasourceRef.current.clear();
-      renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
-    } catch (error) {
-      console.error("Error fetching or rendering route:", error);
-      setError("Failed to display route. Please try again.");
-    }
-  };
+  try {
+    const route = await getRouteDirections(currentLocation, [station.latitude, station.longitude]);
+    datasourceRef.current.clear();
+    renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
+
+    // Scroll to the top of the page to focus on the map
+    window.scrollTo({
+      top: 0, // Scroll to the top of the document
+      behavior: 'smooth' // Optional: Enable smooth scrolling
+    });
+  } catch (error) {
+    console.error("Error fetching or rendering route:", error);
+    setError("Failed to display route. Please try again.");
+  }
+};
+
 
 
   return (
