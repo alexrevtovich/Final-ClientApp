@@ -152,7 +152,7 @@
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   background-color: #f9f9f9;
-  width: 100%; /* Ensure review items take full width of their container */
+  width: calc(100% - 30px); /* Match the width of review items, accounting for padding */
 }
 
 /* Styles for the review textarea */

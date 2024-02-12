@@ -97,21 +97,22 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
         <div className="modal">
           <button className="close-modal" onClick={toggleModal}>X</button>
           <form onSubmit={handleSubmit}>
-            <div className="rating-input">
-              {[1, 2, 3, 4, 5].map((num) => (
-                <label key={num} className={`rating-label ${rating >= num ? 'selected' : ''}`}>
-                  {num}
-                  <input
-                    type="radio"
-                    name="rating"
-                    value={num}
-                    checked={rating === num}
-                    onChange={(e) => setRating(Number(e.target.value))}
-                    className="rating-radio"
-                  />
-                </label>
-              ))}
-            </div>
+          <div className="rating-input">
+            {[1, 2, 3, 4, 5].map((num) => (
+              <label key={num} className={`rating-label ${rating >= num ? 'selected' : ''}`}>
+                <input
+                  type="radio"
+                  name="rating"
+                  value={num}
+                  checked={rating === num}
+                  onChange={(e) => setRating(Number(e.target.value))}
+                  className="rating-radio"
+                />
+                {num} {/* Moved number after the input */}
+              </label>
+            ))}
+          </div>
+
             <textarea
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
