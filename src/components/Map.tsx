@@ -9,6 +9,7 @@ import reverseGeocode from '../utils/reverse';
 import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review'; 
+import StarRating from '../utils/starRating';
 
 const Map: React.FC = () => {
   const navigate = useNavigate();
@@ -178,17 +179,23 @@ const Map: React.FC = () => {
       <div ref={mapRef} className="map-container" />
       {error && <p className="error-message">{error}</p>}
       <div>
-        {stationData.map((station, index) => (
-          <div key={index} className="station-info">
-            <p>Station Name: {station.station_name}</p>
-            <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
-            <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
-            <p>Distance: {station.distance?.toFixed(2)} miles</p>
+          {stationData.map((station, index) => (
+      <div key={index} className="station-info">
+        <p>Station Name: {station.station_name}</p>
+        <div>
+          <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
+          {station.averageRating > 0 && <StarRating rating={station.averageRating} />}
+        </div>
+        <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
+        <p>Distance: {station.distance?.toFixed(2)} miles</p>
 
-            <button onClick={() => handleStationSelect(station, myLocation)}>Select</button>
-            <Review stationId={station.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
-          </div>
-        ))}
+        <button onClick={() => handleStationSelect(station, myLocation)}>Select</button>
+        <Review stationId={station.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
+      </div>
+    ))}
+
+
+
       </div>
     </>
   );
