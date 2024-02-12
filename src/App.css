@@ -92,3 +92,54 @@
 .account-info {
   margin: 10px 0; /* Add some vertical spacing between account info lines */
 }
+
+/* Existing styles... */
+
+/* New styles for Google sign-in button */
+.google-signin-button {
+  display: flex; /* Use flex to center the button */
+  justify-content: center; /* Center button horizontally */
+  width: fit-content; /* Adjust width to fit content */
+  margin: auto; /* Center the button container */
+}
+
+.google-signin-button > div { /* Target the inner div of the Google button */
+  width: 40vmin; /* Match the width of the logo */
+  margin: 10px 0; /* Add some space above and below the button */
+}
+
+
+.logo-container {
+  position: relative;
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+  max-width: 40%; /* Set the maximum width of the logo */
+  margin: auto; /* Center the logo horizontally */
+  display: block; /* Make the image block-level to respect margin: auto */
+}
+
+.App-logo-small {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%); /* Center the small logo horizontally */
+  max-width: 40%; /* Optionally set the maximum width of the small logo */
+  height: auto; /* Maintain aspect ratio */
+  /* Adjust the height or width as necessary to match the small logo size */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+/* Centering the Google sign-in button */
+#signInDiv {
+  display: flex;
+  justify-content: center;
+  width: 100%; /* Ensure the div takes up the full width */
+}

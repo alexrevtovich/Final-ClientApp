@@ -51,11 +51,17 @@ const Auth: React.FC = () => {
   
 
   return (
-    <div>
-      <div id="signInDiv"></div> {/* sign-in button from Google*/}
-     
+    <div className="auth-container">
+      <div className="logo-container">
+        <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo_small.png`} alt="EVSpotter Small Logo" className="App-logo-small" />
+        <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo.png`} alt="EVSpotter Logo" className="App-logo" />
+      </div>
+  
+      <div id="signInDiv" className="google-signin-button"></div>
     </div>
   );
+  
+  
 };
 
 export default Auth;
