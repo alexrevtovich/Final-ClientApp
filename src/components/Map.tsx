@@ -174,7 +174,7 @@ const Map: React.FC = () => {
           onKeyDown={handleKeyDown}
           aria-label="Location Input"
         />
-        <button onClick={handleSubmit}>Go</button>
+        <button onClick={handleSubmit}>Find</button>
       </div>
       <div ref={mapRef} className="map-container" />
       {error && <p className="error-message">{error}</p>}

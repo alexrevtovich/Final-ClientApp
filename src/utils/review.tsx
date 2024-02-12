@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 
 
 // Define an interface for the component props
@@ -20,13 +20,8 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [reviewMessage, setReviewMessage] = useState<string>('');
 
-  useEffect(() => {
-    if (showModal) {
-      fetchReviews();
-    }
-  }, [showModal, stationId]); 
-
-  const fetchReviews = async () => {
+  // Memoize fetchReviews using useCallback
+  const fetchReviews = useCallback(async () => {
     try {
       const response = await fetch('https://s24-final-back.azurewebsites.net/api/getreviews', {
         method: 'POST',
@@ -52,10 +47,14 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
       console.error('Error fetching reviews:', error);
       setReviewMessage("Error fetching reviews.");
     }
-  };
+  }, [stationId]);  // Dependency array includes stationId
 
+  useEffect(() => {
+    if (showModal) {
+      fetchReviews();
+    }
+  }, [showModal, fetchReviews]);  // Dependency array includes showModal and fetchReviews
 
-  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = {
@@ -64,7 +63,7 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
       rating,
       reviewText,
     };
-  
+
     try {
       const response = await fetch('https://s24-final-back.azurewebsites.net/api/addrating', {
         method: 'POST',
@@ -73,13 +72,13 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (response.ok) {
         alert('Review submitted successfully!');
-        // Reset rating and reviewText
         setRating(0);
         setReviewText('');
-        setShowModal(false); // Close the modal on successful submission
+        setShowModal(false);
+        fetchReviews();  // Refresh reviews after submitting
       } else {
         alert('Failed to submit the review.');
       }
@@ -89,7 +88,6 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
     }
   };
 
-  // Toggle the showModal state
   const toggleModal = () => setShowModal(!showModal);
 
   return (
@@ -97,7 +95,7 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
       <button onClick={toggleModal}>Reviews</button>
       {showModal && (
         <div className="modal">
-          <button className="close-modal" onClick={toggleModal}>X</button> {/* Add a button to close the modal */}
+          <button className="close-modal" onClick={toggleModal}>X</button>
           <form onSubmit={handleSubmit}>
             <div className="rating-input">
               {[1, 2, 3, 4, 5].map((num) => (
@@ -122,7 +120,6 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
             />
             <button type="submit" className="submit-review">Submit</button>
           </form>
-          {/* Review Message and Reviews Display */}
           {reviewMessage && <div className="review-message">{reviewMessage}</div>}
           <div className="reviews-list">
             {reviews.map((review, index) => (
@@ -137,6 +134,6 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
       )}
     </>
   );
-            };
+};
 
 export default Review;
