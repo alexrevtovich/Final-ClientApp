@@ -143,3 +143,58 @@
   justify-content: center;
   width: 100%; /* Ensure the div takes up the full width */
 }
+
+/* Styles for review items */
+.review-item {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+  width: 100%; /* Ensure review items take full width of their container */
+}
+
+/* Styles for the review textarea */
+.review-textarea {
+  width: calc(100% - 30px); /* Match the width of review items, accounting for padding */
+  padding: 15px; /* Same padding as review items for consistency */
+  margin-bottom: 20px; /* Match the margin-bottom of review items */
+  border: 1px solid #ccc; /* Match the border style of review items */
+  border-radius: 5px; /* Match the border-radius of review items */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Match the box-shadow of review items */
+  resize: vertical; /* Allow vertical resizing only */
+  display: block; /* Ensure the textarea is block-level for full width */
+}
+
+/* Styles for the review rating, email, and text within each review item */
+.review-item p {
+  margin: 5px 0; /* Add some vertical spacing between paragraphs */
+}
+
+/* Styles for the modal where reviews are displayed */
+.modal {
+  position: fixed; /* Position the modal fixed on the screen */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the modal */
+  background-color: white; /* Set the modal background color */
+  padding: 20px; /* Add some padding inside the modal */
+  border-radius: 10px; /* Optional: Add rounded corners to the modal */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Optional: Add a shadow to the modal */
+  width: 80%; /* Set the modal width */
+  max-width: 600px; /* Ensure the modal isn't too wide on large screens */
+  z-index: 1000; /* Ensure the modal is above other content */
+ 
+}
+
+/* Style for the close button in the modal */
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer; /* Change the cursor to pointer when hovering over the button */
+  border: none; /* Remove default button borders */
+  background-color: transparent; /* Remove default button background */
+  font-size: 24px; /* Increase the font size of the 'X' */
+}
