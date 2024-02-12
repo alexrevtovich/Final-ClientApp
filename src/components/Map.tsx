@@ -181,13 +181,12 @@ const Map: React.FC = () => {
         {stationData.map((station, index) => (
           <div key={index} className="station-info">
             <p>Station Name: {station.station_name}</p>
-            <p>Rating: {station.averageRating}</p>
+            <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
             <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
             <p>Distance: {station.distance?.toFixed(2)} miles</p>
 
             <button onClick={() => handleStationSelect(station, myLocation)}>Select</button>
             <Review stationId={station.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
-            
           </div>
         ))}
       </div>

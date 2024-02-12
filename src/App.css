@@ -82,6 +82,22 @@
   height: 70vh; /* 70% of the viewport height */
 }
 
+/* for stations */
+.station-info {
+  border: 1px solid #ccc; /* Adds a light grey border around each station info block */
+  padding: 15px; /* Adds padding inside each station info block for spacing */
+  margin-bottom: 20px; /* Adds margin below each station info block for spacing */
+  border-radius: 5px; /* Rounds the corners of the border */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adds a subtle shadow for depth */
+  background-color: #f9f9f9; /* Sets a light grey background color */
+  width: calc(100% - 30px); /* Ensures the width accounts for padding, making the layout more consistent */
+}
+
+.station-info p {
+  margin: 5px 0; /* Adds some vertical spacing between paragraphs within the station info */
+}
+
+
 .account-container {
   text-align: center; /* Center-align text */
   padding: 20px; /* Add some padding for better spacing */

@@ -12,7 +12,7 @@ export type StationData = {
   zip: string;
   ev_connector_types: string[];
   distance: number;
-  averageRating: string;
+  averageRating: number;
 };
 
 // Function to fetch and filter station data
