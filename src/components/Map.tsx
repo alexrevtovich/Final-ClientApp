@@ -79,7 +79,7 @@ const Map: React.FC = () => {
 
   // Initialize map and fetch stations data around the user's location
   useEffect(() => {
-    if (mapRef.current && !mapInstanceRef.current) {
+    if (mapRef.current && !mapInstanceRef.current && myLocation) { // Check if myLocation is set
       // Create a new map instance
       const map = new atlas.Map(mapRef.current, {
         authOptions: {
@@ -90,20 +90,19 @@ const Map: React.FC = () => {
         zoom: 15,
         style: 'road',
       });
-
+  
       // Add event listener for when the map is ready
       map.events.add('ready', async () => {
         mapInstanceRef.current = map;
         datasourceRef.current = new atlas.source.DataSource();
         map.sources.add(datasourceRef.current);
-      
+  
         // Fetch and display stations data around the user's location
-        // Async fetch stations around default location
         const myLocationStr = `${myLocation[0]},${myLocation[1]}`;
         await fetchAndDisplayStations(myLocationStr);
       });
     }
-  }, [myLocation, fetchAndDisplayStations]);
+  }, [myLocation]); // Depend on myLocation
 
   // Update map's camera when myLocation changes
   useEffect(() => {
