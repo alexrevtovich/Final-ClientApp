@@ -21,15 +21,17 @@ const Map: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]); //default value that is valid for sure
   const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
+  const [isLocationSet, setIsLocationSet] = useState(false); //track that location is set. Prevents map from not rendering
+
 
   // Memoize updateMyLocation using useCallback
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
-    // Directly use setMyLocation since it's stable and doesn't change
     setMyLocation((currentLocation) => {
       const newLocation = typeof value === 'function' ? value(currentLocation) : value;
-
+  
       if (typeof newLocation[0] === 'number' && typeof newLocation[1] === 'number') {
-        return newLocation; // Return newLocation directly
+        setIsLocationSet(true); // Indicate that location has been set
+        return newLocation;
       } else {
         console.error('Tried to set invalid myLocation:', newLocation);
         return [29.7174, -95.4028]; // Return default location
