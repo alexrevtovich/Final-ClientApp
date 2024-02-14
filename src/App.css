@@ -199,20 +199,27 @@
   margin: 5px 0; /* Add some vertical spacing between paragraphs */
 }
 
+.reviews-list {
+  max-height: 300px; /* Adjust based on your needs for maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-right: 10px; /* Optional: Adds some space for the scrollbar */
+}
+
 /* Styles for the modal where reviews are displayed */
 .modal {
-  position: fixed; /* Position the modal fixed on the screen */
-  top: 50%;
+  position: fixed;
+  top: 10%; /* Start 10% from the top */
   left: 50%;
-  transform: translate(-50%, -50%); /* Center the modal */
-  background-color: white; /* Set the modal background color */
-  padding: 20px; /* Add some padding inside the modal */
-  border-radius: 10px; /* Optional: Add rounded corners to the modal */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Optional: Add a shadow to the modal */
-  width: 80%; /* Set the modal width */
-  max-width: 600px; /* Ensure the modal isn't too wide on large screens */
-  z-index: 1000; /* Ensure the modal is above other content */
- 
+  transform: translateX(-50%); /* Center horizontally */
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  width: 80%;
+  max-width: 600px;
+  z-index: 1000;
+  overflow-y: auto; /* Enable scrolling within the modal */
+  max-height: 80%; /* Prevent the modal from being too tall */
 }
 
 /* Style for the close button in the modal */
