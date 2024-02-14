@@ -21,17 +21,16 @@ const Map: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]); //default value that is valid for sure
   const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
-  const [isLocationSet, setIsLocationSet] = useState(false); //track that location is set. Prevents map from not rendering
 
-
-  // Memoize updateMyLocation using useCallback
+  // Memoize updateMyLocation using useCallback 
+  //check myLocation later
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
+    // Directly use setMyLocation since it's stable and doesn't change
     setMyLocation((currentLocation) => {
       const newLocation = typeof value === 'function' ? value(currentLocation) : value;
-  
+
       if (typeof newLocation[0] === 'number' && typeof newLocation[1] === 'number') {
-        setIsLocationSet(true); // Indicate that location has been set
-        return newLocation;
+        return newLocation; // Return newLocation directly
       } else {
         console.error('Tried to set invalid myLocation:', newLocation);
         return [29.7174, -95.4028]; // Return default location
@@ -148,28 +147,21 @@ const Map: React.FC = () => {
   };
 
   // Handle station selection
-const handleStationSelect = async (station: StationData, currentLocation: [number, number]) => {
-  if (!mapInstanceRef.current || !datasourceRef.current) {
-    console.error("Map instance or datasource is not available");
-    return;
-  }
+  const handleStationSelect = async (station: StationData, currentLocation: [number, number]) => {
+    if (!mapInstanceRef.current || !datasourceRef.current) {
+      console.error("Map instance or datasource is not available");
+      return;
+    }
 
-  try {
-    const route = await getRouteDirections(currentLocation, [station.latitude, station.longitude]);
-    datasourceRef.current.clear();
-    renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
-
-    // Scroll to the top of the page to focus on the map
-    window.scrollTo({
-      top: 0, // Scroll to the top of the document
-      behavior: 'smooth' // Optional: Enable smooth scrolling
-    });
-  } catch (error) {
-    console.error("Error fetching or rendering route:", error);
-    setError("Failed to display route. Please try again.");
-  }
-};
-
+    try {
+      const route = await getRouteDirections(currentLocation, [station.latitude, station.longitude]);
+      datasourceRef.current.clear();
+      renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
+    } catch (error) {
+      console.error("Error fetching or rendering route:", error);
+      setError("Failed to display route. Please try again.");
+    }
+  };
 
 
   return (
