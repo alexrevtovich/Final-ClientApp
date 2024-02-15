@@ -81,30 +81,50 @@ const Map: React.FC = () => {
 
   // Initialize map and fetch stations data around the user's location
   useEffect(() => {
-    if (mapRef.current && !mapInstanceRef.current && myLocation) { // Check if myLocation is set
-      // Create a new map instance
-      const map = new atlas.Map(mapRef.current, {
-        authOptions: {
-          authType: atlas.AuthenticationType.subscriptionKey,
-          subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs',
-        },
-        center: myLocation,
-        zoom: 15,
-        style: 'road',
-      });
-  
-      // Add event listener for when the map is ready
-      map.events.add('ready', async () => {
-        mapInstanceRef.current = map;
-        datasourceRef.current = new atlas.source.DataSource();
-        map.sources.add(datasourceRef.current);
-  
-        // Fetch and display stations data around the user's location
-        const myLocationStr = `${myLocation[0]},${myLocation[1]}`;
-        await fetchAndDisplayStations(myLocationStr);
-      });
-    }
-  }, [myLocation, fetchAndDisplayStations]); // Depend on myLocation and fetchAndDisplayStations
+    if (mapRef.current && !mapInstanceRef.current) { 
+    // Check if the map element exists and the map instance hasn't been initialized yet
+    
+    const initializeMap = async () => {
+      // Default location
+      let initialLocation = [29.7174, -95.4028];
+    
+      // Check if user's location is available
+      if (myLocation) {
+        initialLocation = myLocation;
+      }
+    
+      // Ensure mapRef.current is not null before proceeding
+      if (mapRef.current) {
+        // Create a new map instance
+        const map = new atlas.Map(mapRef.current, {
+          authOptions: {
+            authType: atlas.AuthenticationType.subscriptionKey,
+            subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs',
+          },
+          center: initialLocation, // Use the default or user's location
+          zoom: 15,
+          style: 'road',
+        });
+    
+        // Add event listener for when the map is ready
+        map.events.add('ready', async () => {
+          mapInstanceRef.current = map;
+          datasourceRef.current = new atlas.source.DataSource();
+          map.sources.add(datasourceRef.current);
+    
+          // Fetch and display stations data around the default or user's location
+          const locationStr = `${initialLocation[0]},${initialLocation[1]}`;
+          await fetchAndDisplayStations(locationStr);
+        });
+      } else {
+        console.error("Map container div not found");
+      }
+    };
+    
+
+    initializeMap();
+  }
+}, [myLocation, fetchAndDisplayStations]); // Depend on myLocation and fetchAndDisplayStations
 
   // Update map's camera when myLocation changes
   useEffect(() => {
