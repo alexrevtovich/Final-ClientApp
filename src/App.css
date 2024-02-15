@@ -127,7 +127,7 @@
 .App-logo {
   height: auto;
   pointer-events: none;
-  max-width: 25%; /* Set the maximum width of the logo */
+  max-width: 20%; /* Set the maximum width of the logo */
   margin: auto; /* Center the logo horizontally */
   display: block; /* Make the image block-level to respect margin: auto */
 }
@@ -137,7 +137,7 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%); /* Center the small logo horizontally */
-  max-width: 25%; /* Optionally set the maximum width of the small logo */
+  max-width: 20%; /* Optionally set the maximum width of the small logo */
   height: auto; /* Maintain aspect ratio */
   /* Adjust the height or width as necessary to match the small logo size */
 }

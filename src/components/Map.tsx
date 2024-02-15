@@ -87,6 +87,7 @@ const Map: React.FC = () => {
     const initializeMap = async () => {
       // Default location
       let initialLocation = [29.7174, -95.4028];
+      
     
       // Check if user's location is available
       if (myLocation) {
