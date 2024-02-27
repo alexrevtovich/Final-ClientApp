@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import fetchAccountInfo from '../utils/accountinfo';
 import getMyLocation from '../utils/mylocation';
-import reverseGeocode from '../utils/reverse'; 
+import reverseGeocode from '../utils/reverse';
+import AddCar from '../utils/addCar';
 
 const Account: React.FC = () => {
   const navigate = useNavigate();
   const userEmail = sessionStorage.getItem("userEmail");
   const [userInfo, setUserInfo] = useState({ username: '', email: '', zipcode: '' });
   const [myLocation, setMyLocation] = useState<[number, number]>([0, 0]);
-  const [address, setAddress] = useState(''); // State to hold the address
+  const [address, setAddress] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [newZipcode, setNewZipcode] = useState('');
 
   useEffect(() => {
     if (!userEmail) {
@@ -25,33 +28,47 @@ const Account: React.FC = () => {
         }
       })();
     }
-  
-    // Pass setMyLocation directly to getMyLocation
+
     getMyLocation(setMyLocation);
-  }, [navigate, userEmail, setMyLocation]);
-  
-  // Use an effect to perform reverse geocoding whenever myLocation changes
+  }, [navigate, userEmail]);
+
   useEffect(() => {
     (async () => {
-      if (myLocation[0] !== 0 || myLocation[1] !== 0) { // Assuming [0, 0] is the default state you want to exclude
+      if (myLocation[0] !== 0 || myLocation[1] !== 0) {
         const fetchedAddress = await reverseGeocode(myLocation);
         setAddress(fetchedAddress);
       }
     })();
-  }, [myLocation]); // Depend on myLocation
-  
-  
-  
+  }, [myLocation]);
+
+  const toggleModal = () => setShowModal(!showModal);
+
+  const handleUpdate = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    // Here you would handle the actual update logic, possibly sending the newZipcode to your backend
+    console.log("New Zipcode:", newZipcode);
+    setShowModal(false);
+    // Update the UI accordingly if needed
+  };
 
   return (
     <div className="account-container">
       <h2>Account Page</h2>
       <div className="account-info">Hello {userInfo.username}</div>
       <div className="account-info">Your email is: {userInfo.email}</div>
-      <div className="account-info">Your zipcode is: {userInfo.zipcode}</div>
+      <div className="account-info">
+        Your car is: {userInfo.zipcode} <button onClick={toggleModal}>Update</button>
+      </div>
       <div className="account-info">
         You are here: {address || 'Fetching your address...'}
       </div>
+      {showModal && (
+        <div className="modal">
+          <button className="close-modal" onClick={toggleModal}>X</button>
+          <AddCar />
+        </div>
+      )}
+
     </div>
   );
 };
