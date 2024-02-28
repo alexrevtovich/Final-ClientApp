@@ -9,7 +9,6 @@ import reverseGeocode from '../utils/reverse';
 import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review'; 
-import POI from '../utils/poi';
 import StarRating from '../utils/starRating';
 
 const Map: React.FC = () => {
