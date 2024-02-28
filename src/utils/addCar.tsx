@@ -53,17 +53,22 @@ const AddCar: React.FC = () => {
   }, [carData.model, cars]);
 
   useEffect(() => {
-    if (carData.year) {
-      // Filter cars based on the selected year and then map to their usableBatterySize
-      const filteredBatterySizes = cars
-        .filter(car => car.releaseYear.toString() === carData.year)
-        .map(car => `${car.usableBatterySize} kWh`); // Format for display
+    if (carData.year && carData.model && carData.brand) {
+      // Filter cars based on the selected brand, model, and year
+      const filteredCars = cars.filter(car =>
+        car.brand === carData.brand &&
+        car.model === carData.model &&
+        car.releaseYear.toString() === carData.year
+      );
+      // Extract usable battery sizes from filtered cars
+      const filteredBatterySizes = filteredCars.map(car => `${car.usableBatterySize} kWh`);
   
-      // Convert array to Set to unique values, then back to array to remove duplicates
+      // Set unique battery sizes
       setBatterySizes(Array.from(new Set(filteredBatterySizes)));
       setCarData(prev => ({ ...prev, batterySize: '' })); // Reset battery size selection
     }
-  }, [carData.year, cars]);
+  }, [carData.year, carData.model, carData.brand, cars]);
+  
   
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
