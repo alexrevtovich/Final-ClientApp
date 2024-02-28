@@ -12,7 +12,7 @@ const Account: React.FC = () => {
   const [myLocation, setMyLocation] = useState<[number, number]>([0, 0]);
   const [address, setAddress] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [newZipcode, setNewZipcode] = useState('');
+
 
   useEffect(() => {
     if (!userEmail) {
@@ -43,13 +43,7 @@ const Account: React.FC = () => {
 
   const toggleModal = () => setShowModal(!showModal);
 
-  const handleUpdate = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    // Here you would handle the actual update logic, possibly sending the newZipcode to your backend
-    console.log("New Zipcode:", newZipcode);
-    setShowModal(false);
-    // Update the UI accordingly if needed
-  };
+
 
   return (
     <div className="account-container">
