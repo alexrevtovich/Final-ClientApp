@@ -53,7 +53,7 @@ const Auth: React.FC = () => {
   return (
     <div className="auth-container">
        <p className="logo-text">EV Spotter</p>
-       <p className="logo-text-small">Power Your Journey With Our Charging Stations Locator</p>
+       <p className="logo-text-small">Power Your Journey With Our  Charging Stations Locator</p>
       <div className="logo-container">
         <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo_small.png`} alt="EVSpotter Small Logo" className="App-logo-small" />
         <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo.png`} alt="EVSpotter Logo" className="App-logo" />
