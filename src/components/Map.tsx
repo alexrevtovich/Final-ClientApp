@@ -51,9 +51,10 @@ const Map: React.FC = () => {
           center: [stationsData[0].longitude, stationsData[0].latitude],
           zoom: 15,
         });
-
-        // Pass the current location to addPinsToMap
+      
+        // Pass only stationsData and mapInstanceRef.current to addPinsToMap
         addPinsToMap(stationsData, mapInstanceRef.current, handleStationSelect, myLocationRef.current);
+
       } else {
         setError('No stations found for the provided location.');
       }
@@ -183,6 +184,7 @@ const Map: React.FC = () => {
       setError("Failed to display route. Please try again.");
     }
   };
+
 
 
   return (

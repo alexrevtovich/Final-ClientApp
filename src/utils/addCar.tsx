@@ -16,7 +16,11 @@ interface CarData {
   batterySize: string;
 }
 
-const AddCar: React.FC = () => {
+interface AddCarProps {
+  onUpdateCar: () => void;
+}
+
+const AddCar: React.FC<AddCarProps> = ({ onUpdateCar }) => {
   const [cars, setCars] = useState<Car[]>([]);
   const [carData, setCarData] = useState<CarData>({ brand: '', model: '', year: '', batterySize: '' });
   const [brands, setBrands] = useState<string[]>([]);
@@ -53,23 +57,68 @@ const AddCar: React.FC = () => {
   }, [carData.model, cars]);
 
   useEffect(() => {
-    if (carData.year) {
-      // Filter cars based on the selected year and then map to their usableBatterySize
-      const filteredBatterySizes = cars
-        .filter(car => car.releaseYear.toString() === carData.year)
-        .map(car => `${car.usableBatterySize} kWh`); // Format for display
+    if (carData.year && carData.model && carData.brand) {
+      // Filter cars based on the selected brand, model, and year
+      const filteredCars = cars.filter(car =>
+        car.brand === carData.brand &&
+        car.model === carData.model &&
+        car.releaseYear.toString() === carData.year
+      );
+      // Extract usable battery sizes from filtered cars
+      const filteredBatterySizes = filteredCars.map(car => `${car.usableBatterySize} kWh`);
   
-      // Convert array to Set to unique values, then back to array to remove duplicates
+      // Set unique battery sizes
       setBatterySizes(Array.from(new Set(filteredBatterySizes)));
       setCarData(prev => ({ ...prev, batterySize: '' })); // Reset battery size selection
     }
-  }, [carData.year, cars]);
+  }, [carData.year, carData.model, carData.brand, cars]);
   
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Submitting Car Data:', carData);
+    const selectedCar = cars.find(car =>
+      car.brand === carData.brand &&
+      car.model === carData.model &&
+      car.releaseYear.toString() === carData.year &&
+      `${car.usableBatterySize} kWh` === carData.batterySize
+    );
+  
+    if (selectedCar) {
+      const userEmail = sessionStorage.getItem("userEmail");
+  
+      if (userEmail) {
+        const payload = {
+          email: userEmail,
+          car: selectedCar.carId
+        };
+  
+        try {
+          const response = await fetch('https://s24-final-back.azurewebsites.net/api/updatecar', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+  
+          if (response.ok) {
+            console.log('Car updated successfully!');
+            onUpdateCar(); // Update the car information displayed in the account
+            window.location.reload(); // Trigger page refresh
+          } else {
+            console.error('Failed to update car:', response.statusText);
+          }
+        } catch (error) {
+          console.error('An error occurred while updating car:', error);
+        }
+      } else {
+        console.error('User email not found in sessionStorage!');
+      }
+    } else {
+      console.error('Selected car not found!');
+    }
   };
+  
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
