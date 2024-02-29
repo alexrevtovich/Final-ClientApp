@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job - Testing
     env:  # Setting environment variables specific to the testing environment
-      REACT_APP_GOOGLE_CLIENT_ID: 'your-testing-env-google-client-id'  # Change this value to your testing environment's specific client ID
+      REACT_APP_GOOGLE_CLIENT_ID: '838062661118-ktim79hu56fe6ot7c8cj3spjf81oiec4.apps.googleusercontent.com'  # Change this value to your testing environment's specific client ID
     steps:
       - uses: actions/checkout@v3
         with:
