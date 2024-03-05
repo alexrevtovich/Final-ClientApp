@@ -49,7 +49,7 @@ const Auth: React.FC = () => {
   }, [navigate]);
 
    // TEST environment variable
-   const testVariable = process.env.REACT_APP_TEST_VARIABLE; // TEST .env
+   const testVariable = process.env.REACT_APP_TEST_STRING; // TEST .env
 
   return (
     <div className="auth-container">
