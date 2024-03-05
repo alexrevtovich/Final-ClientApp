@@ -48,6 +48,9 @@ const Auth: React.FC = () => {
     };
   }, [navigate]);
 
+
+  // TEST environment variable
+  const testVariable = process.env.REACT_APP_TEST_VARIABLE; // TEST .env
   
 
   return (
@@ -62,6 +65,7 @@ const Auth: React.FC = () => {
       
   
       <div id="signInDiv" className="google-signin-button"></div>
+      <div>{testVariable}</div>
     </div>
   );
   
