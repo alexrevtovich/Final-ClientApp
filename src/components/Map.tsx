@@ -1,6 +1,6 @@
 // Map.tsx
 import React, { useEffect, useRef } from 'react';
-import { addAdvancedMarker } from '../utils/advMarker'; // Adjust the path as necessary
+//import { addAdvancedMarker } from '../utils/advMarker'; // Adjust the path as necessary
 
 const Map: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ const Map: React.FC = () => {
         });
 
         // Example usage of the advanced marker
-        addAdvancedMarker(map);
+        //addAdvancedMarker(map);
       }
     });
   }, []);
