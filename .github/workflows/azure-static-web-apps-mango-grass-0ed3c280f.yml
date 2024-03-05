@@ -16,6 +16,9 @@ jobs:
     name: Build and Deploy Job
     env:  # Setting environment variables
       REACT_APP_GOOGLE_CLIENT_ID: '838062661118-ktim79hu56fe6ot7c8cj3spjf81oiec4.apps.googleusercontent.com'
+      REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY: 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs'
+      REACT_APP_GOOGLE_MAPS_API_KEY: 'AIzaSyA2Xtas7tsPIHU9nWPDVCTI1Up_CxGjTTA'
+      REACT_APP_TEST_STRING: 'test string'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -28,12 +31,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_GRASS_0ED3C280F }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/" # App source code path
           api_location: "api" # Api source code path - optional
           output_location: "build" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
