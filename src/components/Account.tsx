@@ -91,11 +91,34 @@ const Account: React.FC = () => {
     }
     try {
       await deleteCar(uniqueId);
-      setCarsInfo(carsInfo.filter(car => car.uniqueId !== uniqueId)); // Updated to use uniqueId
+      // Update carsInfo state to remove the deleted car
+      const updatedCarsInfo = carsInfo.filter(car => car.uniqueId !== uniqueId);
+      setCarsInfo(updatedCarsInfo);
+  
+      // Check if the deleted car was the main car
+      if (userInfo.mainCar === uniqueId) {
+        // Update userInfo with a new main car or set to '' if no cars left
+        const newMainCar = updatedCarsInfo.length > 0 ? updatedCarsInfo[0].uniqueId : '';
+        setUserInfo({
+          ...userInfo,
+          mainCar: newMainCar
+        });
+  
+        // Update carInfo with details of the new main car or set to null if no cars left
+        if (newMainCar) {
+          const newMainCarInfo = await fetchCarInfo(newMainCar);
+          setCarInfo(newMainCarInfo);
+        } else {
+          setCarInfo(null); // Set carInfo to null to indicate "No car info"
+        }
+      }
     } catch (error) {
       console.error('Failed to delete car:', error);
     }
-};
+  };
+  
+  
+  
 
 
   
