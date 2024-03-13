@@ -1,35 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode'; // Note: Corrected import
-import { DefaultAzureCredential } from '@azure/identity';
-import { SecretClient } from '@azure/keyvault-secrets';
+import {jwtDecode} from 'jwt-decode'; // Ensure correct import for your use case
 
 // Declare the global google variable provided by the Google Identity Services library
 declare const google: any;
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-const vaultUrl = 'https://s24-final.vault.azure.net/';
-const secretName = 'testKeyVault';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
-  const [secretValue, setSecretValue] = useState<string | undefined>();
 
   useEffect(() => {
-    // Fetch secret from Azure Key Vault
-    const getSecretFromKeyVault = async () => {
-      const credential = new DefaultAzureCredential();
-      const secretClient = new SecretClient(vaultUrl, credential);
-      try {
-        const secret = await secretClient.getSecret(secretName);
-        setSecretValue(secret.value);
-      } catch (error) {
-        console.error('Error fetching secret from Azure Key Vault:', error);
-      }
-    };
-
-    getSecretFromKeyVault();
-
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
@@ -50,7 +31,7 @@ const Auth: React.FC = () => {
         };
     
         // Send the user data to your backend for processing
-        const fetchResponse = await fetch('https://s24-final-back.azurewebsites.net/api/CreateOrUpdateUser', {
+        const fetchResponse = await fetch('https://s24-final-back.azurewebsites.net/api/AddUser', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -70,7 +51,6 @@ const Auth: React.FC = () => {
         console.error('Error decoding JWT, handling user data, or navigating:', error);
       }
     };
-    
 
     script.onload = () => {
       google.accounts.id.initialize({
@@ -94,18 +74,13 @@ const Auth: React.FC = () => {
 
   return (
     <div className="auth-container">
-       <p className="logo-text">EV Spotter</p>
-       <p className="logo-text-small">Testing .env - Power Your Journey With Our Production Charging Stations Locator</p>
+      <p className="logo-text">EV Spotter</p>
+      <p className="logo-text-small">Testing .env - Power Your Journey With Our Production Charging Stations Locator</p>
       <div className="logo-container">
         <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo_small.png`} alt="EVSpotter Small Logo" className="App-logo-small" />
         <img src={`${process.env.PUBLIC_URL}/EVSpotter_Logo.png`} alt="EVSpotter Logo" className="App-logo" />
       </div>
-     
-      
-  
       <div id="signInDiv" className="google-signin-button"></div>
-     
-      <div>Secret from Key Vault: {secretValue}</div>
     </div>
   );
 };

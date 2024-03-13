@@ -62,7 +62,7 @@ const Account: React.FC = () => {
       <div className="account-info">Hello {userInfo.username}</div>
       <div className="account-info">Your email is: {userInfo.email}</div>
       <div className="account-info">
-        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear}) - ${carInfo.charge}%` : 'No car info'} 
+        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear}) - ${carInfo.charge}%` : 'No car info'}
         <button onClick={toggleModal}>Add Car</button>
       </div>
       <div className="account-info">
