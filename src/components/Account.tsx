@@ -1,3 +1,4 @@
+// Account.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import fetchAccountInfo from '../utils/accountinfo';
@@ -9,8 +10,8 @@ import fetchCarInfo from '../utils/carInfo';
 const Account: React.FC = () => {
   const navigate = useNavigate();
   const userEmail = sessionStorage.getItem("userEmail");
-  const [userInfo, setUserInfo] = useState({ username: '', email: '', car: '' });
-  const [carInfo, setCarInfo] = useState<{ brand: string, model: string, releaseYear: number } | null>(null);
+  const [userInfo, setUserInfo] = useState({ username: '', email: '', maincar: '' });
+  const [carInfo, setCarInfo] = useState<{ brand: string, model: string, releaseYear: number, charge: number } | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([0, 0]);
   const [address, setAddress] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -23,11 +24,13 @@ const Account: React.FC = () => {
       (async () => {
         try {
           const accountInfo = await fetchAccountInfo(userEmail);
-          setUserInfo({ username: accountInfo.username, email: accountInfo.email, car: accountInfo.car });
+          setUserInfo(accountInfo); // Adjusted to store the entire account info response
 
-          // Fetch car info based on user's car ID
-          const carInfo = await fetchCarInfo(accountInfo.car);
-          setCarInfo(carInfo);
+          // Fetch car info based on user's main car unique ID
+          if (accountInfo.maincar) {
+            const carInfo = await fetchCarInfo(accountInfo.maincar);
+            setCarInfo(carInfo);
+          }
         } catch (error) {
           console.error('Failed to fetch account info:', error);
         }
@@ -49,10 +52,8 @@ const Account: React.FC = () => {
   const toggleModal = () => setShowModal(!showModal);
 
   const handleUpdateCar = () => {
-    setShowModal(false); // Close the modal
-    // Fetch the updated account information after the car is updated
-    // You might need to implement the function to fetch account info based on the userEmail
-    // and set the updated car information in userInfo
+    setShowModal(false);
+    // Logic to handle updating car information
   };
 
   return (
@@ -61,7 +62,8 @@ const Account: React.FC = () => {
       <div className="account-info">Hello {userInfo.username}</div>
       <div className="account-info">Your email is: {userInfo.email}</div>
       <div className="account-info">
-        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear})` : userInfo.car} <button onClick={toggleModal}>Update</button>
+        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear}) - ${carInfo.charge}%` : 'No car info'} 
+        <button onClick={toggleModal}>Add Car</button>
       </div>
       <div className="account-info">
         You are here: {address || 'Fetching your address...'}
@@ -72,7 +74,6 @@ const Account: React.FC = () => {
           <AddCar onUpdateCar={handleUpdateCar} />
         </div>
       )}
-
     </div>
   );
 };

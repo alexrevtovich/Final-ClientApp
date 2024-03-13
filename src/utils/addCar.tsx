@@ -75,6 +75,8 @@ const AddCar: React.FC<AddCarProps> = ({ onUpdateCar }) => {
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
+    // Find the selected car based on form input
     const selectedCar = cars.find(car =>
       car.brand === carData.brand &&
       car.model === carData.model &&
@@ -86,13 +88,15 @@ const AddCar: React.FC<AddCarProps> = ({ onUpdateCar }) => {
       const userEmail = sessionStorage.getItem("userEmail");
   
       if (userEmail) {
+        // Prepare the payload with selected car info and user email
         const payload = {
-          email: userEmail,
-          car: selectedCar.carId
+          ...selectedCar, // Spread operator to include all selectedCar fields
+          useremail: userEmail, // Add userEmail under the field 'useremail'
+          car_id: selectedCar.carId // Include the carId as 'car_id'
         };
   
         try {
-          const response = await fetch('https://s24-final-back.azurewebsites.net/api/updatecar', {
+          const response = await fetch('https://s24-final-back.azurewebsites.net/api/CreateUserCar', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -101,14 +105,14 @@ const AddCar: React.FC<AddCarProps> = ({ onUpdateCar }) => {
           });
   
           if (response.ok) {
-            console.log('Car updated successfully!');
+            console.log('Car added successfully!');
             onUpdateCar(); // Update the car information displayed in the account
-            window.location.reload(); // Trigger page refresh
+            window.location.reload(); // Optionally, trigger page refresh to reflect changes
           } else {
-            console.error('Failed to update car:', response.statusText);
+            console.error('Failed to add car:', response.statusText);
           }
         } catch (error) {
-          console.error('An error occurred while updating car:', error);
+          console.error('An error occurred while adding the car:', error);
         }
       } else {
         console.error('User email not found in sessionStorage!');
@@ -117,6 +121,7 @@ const AddCar: React.FC<AddCarProps> = ({ onUpdateCar }) => {
       console.error('Selected car not found!');
     }
   };
+  
   
   
 

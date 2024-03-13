@@ -1,9 +1,10 @@
+// carInfo.tsx
 import axios from 'axios';
 
-const fetchCarInfo = async (carId: string) => {
+const fetchCarInfo = async (uniqueId: string) => {
   try {
     const response = await axios.post('https://s24-final-back.azurewebsites.net/api/GetCarByID', {
-      car_id: carId
+      unique_id: uniqueId 
     });
     return response.data;
   } catch (error) {

@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; // Note: Corrected import
 import { DefaultAzureCredential } from '@azure/identity';
 import { SecretClient } from '@azure/keyvault-secrets';
-
 
 // Declare the global google variable provided by the Google Identity Services library
 declare const google: any;
 
-const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '838062661118-ktim79hu56fe6ot7c8cj3spjf81oiec4.apps.googleusercontent.com';
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const vaultUrl = 'https://s24-final.vault.azure.net/';
 const secretName = 'testKeyVault';
 
-
 const Auth: React.FC = () => {
   const navigate = useNavigate();
-
   const [secretValue, setSecretValue] = useState<string | undefined>();
 
   useEffect(() => {
@@ -32,21 +29,48 @@ const Auth: React.FC = () => {
     };
 
     getSecretFromKeyVault();
+
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     document.body.appendChild(script);
 
-    const handleCredentialResponse = (response: any) => {
+    const handleCredentialResponse = async (googleResponse: any) => {
       try {
-        const decoded = jwtDecode(response.credential) as { email: string };
+        const decoded = jwtDecode(googleResponse.credential) as { email: string };
         const userEmail = decoded.email;
         sessionStorage.setItem("userEmail", userEmail);
+    
+        // Prepare the user data for database entry
+        const userData = {
+          email: userEmail,
+          username: "good citizen", // Default username, adjust as needed
+          maincar: "None", // Default main car value
+          cars: [], // Assuming an empty array of cars initially
+        };
+    
+        // Send the user data to your backend for processing
+        const fetchResponse = await fetch('https://s24-final-back.azurewebsites.net/api/CreateOrUpdateUser', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userData),
+        });
+    
+        if (fetchResponse.ok) {
+          console.log('User record created or updated successfully');
+        } else {
+          console.error('Failed to create or update user record:', await fetchResponse.text());
+        }
+    
+        // Navigate to the account page after successful login and user data processing
         navigate('/account');
       } catch (error) {
-        console.error('Error decoding JWT or navigating:', error);
+        console.error('Error decoding JWT, handling user data, or navigating:', error);
       }
     };
+    
 
     script.onload = () => {
       google.accounts.id.initialize({
@@ -68,9 +92,6 @@ const Auth: React.FC = () => {
     };
   }, [navigate]);
 
-   // TEST environment variable
-   const testVariable = process.env.REACT_APP_TEST_STRING; // TEST .env
-
   return (
     <div className="auth-container">
        <p className="logo-text">EV Spotter</p>
@@ -83,12 +104,10 @@ const Auth: React.FC = () => {
       
   
       <div id="signInDiv" className="google-signin-button"></div>
-      <div>{testVariable}</div>
+     
       <div>Secret from Key Vault: {secretValue}</div>
     </div>
   );
-  
-  
 };
 
 export default Auth;
