@@ -5,13 +5,16 @@ import getMyLocation from '../utils/mylocation';
 import reverseGeocode from '../utils/reverse';
 import AddCar from '../utils/addCar';
 import fetchCarInfo from '../utils/carInfo';
+import deleteCar from '../utils/deleteCar';
 
 interface CarDetail {
+  uniqueId: string; // Updated to match the backend response
   brand: string;
   model: string;
   releaseYear: number;
   charge?: number;
 }
+
 
 const Account: React.FC = () => {
   const navigate = useNavigate();
@@ -60,6 +63,7 @@ const Account: React.FC = () => {
       const carsDetailsPromises = userInfo.cars.map(carId => fetchCarInfo(carId));
       try {
         const carsDetails = await Promise.all(carsDetailsPromises);
+        console.log(carsDetails);
         setCarsInfo(carsDetails.filter(car => car !== null));
       } catch (error) {
         console.error('Error fetching cars details:', error);
@@ -80,6 +84,25 @@ const Account: React.FC = () => {
 
   const toggleCarsList = () => setShowCarsList(!showCarsList);
 
+  const handleDeleteCar = async (uniqueId: string) => {
+    if (!uniqueId) {
+      console.error('Unique ID is undefined, cannot delete.');
+      return;
+    }
+    try {
+      await deleteCar(uniqueId);
+      setCarsInfo(carsInfo.filter(car => car.uniqueId !== uniqueId)); // Updated to use uniqueId
+    } catch (error) {
+      console.error('Failed to delete car:', error);
+    }
+};
+
+
+  
+  
+  
+
+
   return (
     <div className="account-container">
       <h2>Account Page</h2>
@@ -97,9 +120,15 @@ const Account: React.FC = () => {
       {showCarsList && (
         <div className="cars-list">
           <ul>
-            {carsInfo.map((car, index) => (
-              <li key={index}>{`${car.brand} ${car.model} (${car.releaseYear})`}</li>
-            ))}
+          {carsInfo.map((car, index) => (
+            <li key={index}>
+              {`${car.brand} ${car.model} (${car.releaseYear})`}
+              <button onClick={() => handleDeleteCar(car.uniqueId)}>Delete</button>
+
+            </li>
+          ))}
+
+
           </ul>
           <button onClick={toggleModal}>Add Car</button>
         </div>
