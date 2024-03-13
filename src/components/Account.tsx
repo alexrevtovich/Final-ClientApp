@@ -6,6 +6,9 @@ import reverseGeocode from '../utils/reverse';
 import AddCar from '../utils/addCar';
 import fetchCarInfo from '../utils/carInfo';
 import deleteCar from '../utils/deleteCar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+
 
 interface CarDetail {
   uniqueId: string; // Updated to match the backend response
@@ -120,12 +123,6 @@ const Account: React.FC = () => {
   
   
 
-
-  
-  
-  
-
-
   return (
     <div className="account-container">
       <h2>Account Page</h2>
@@ -146,10 +143,15 @@ const Account: React.FC = () => {
           {carsInfo.map((car, index) => (
             <li key={index}>
               {`${car.brand} ${car.model} (${car.releaseYear})`}
-              <button onClick={() => handleDeleteCar(car.uniqueId)}>Delete</button>
-
+              <button 
+                onClick={() => handleDeleteCar(car.uniqueId)} 
+                className="delete-btn">
+                <FontAwesomeIcon icon={faTrashAlt} className="delete-icon"/>
+              </button>
             </li>
           ))}
+
+
 
 
           </ul>
