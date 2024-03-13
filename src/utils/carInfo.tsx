@@ -1,4 +1,3 @@
-// carInfo.tsx
 import axios from 'axios';
 
 const fetchCarInfo = async (uniqueId: string) => {

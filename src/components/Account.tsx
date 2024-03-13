@@ -10,7 +10,7 @@ import fetchCarInfo from '../utils/carInfo';
 const Account: React.FC = () => {
   const navigate = useNavigate();
   const userEmail = sessionStorage.getItem("userEmail");
-  const [userInfo, setUserInfo] = useState({ username: '', email: '', maincar: '' });
+  const [userInfo, setUserInfo] = useState({ username: '', email: '', mainCar: '' });
   const [carInfo, setCarInfo] = useState<{ brand: string, model: string, releaseYear: number, charge: number } | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([0, 0]);
   const [address, setAddress] = useState('');
@@ -27,8 +27,8 @@ const Account: React.FC = () => {
           setUserInfo(accountInfo); // Adjusted to store the entire account info response
 
           // Fetch car info based on user's main car unique ID
-          if (accountInfo.maincar) {
-            const carInfo = await fetchCarInfo(accountInfo.maincar);
+          if (accountInfo.mainCar) {
+            const carInfo = await fetchCarInfo(accountInfo.mainCar);
             setCarInfo(carInfo);
           }
         } catch (error) {
@@ -61,8 +61,9 @@ const Account: React.FC = () => {
       <h2>Account Page</h2>
       <div className="account-info">Hello {userInfo.username}</div>
       <div className="account-info">Your email is: {userInfo.email}</div>
+      <div className="account-info">Main Car ID: {userInfo.mainCar || "None"}</div>
       <div className="account-info">
-        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear}) - ${carInfo.charge}%` : 'No car info'}
+        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear}) - ${carInfo.charge}%` : 'No car info'} 
         <button onClick={toggleModal}>Add Car</button>
       </div>
       <div className="account-info">
