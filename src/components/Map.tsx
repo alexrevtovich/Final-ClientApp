@@ -21,6 +21,7 @@ const Map: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]); //default value that is valid for sure
   const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
+  const [activeDetailPanel, setActiveDetailPanel] = useState<StationData | null>(null);
 
   // Memoize updateMyLocation using useCallback 
   //check myLocation later
@@ -185,6 +186,11 @@ const Map: React.FC = () => {
     }
   };
 
+  const handleDetailsClick = (station: StationData) => {
+    setActiveDetailPanel(station);
+  };
+  
+
 
 
   return (
@@ -213,14 +219,22 @@ const Map: React.FC = () => {
         <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
         <p>Distance: {station.distance?.toFixed(2)} miles</p>
 
+        <button onClick={() => handleDetailsClick(station)}>Details</button>
+
         <button onClick={() => handleStationSelect(station, myLocation)}>Select</button>
         <Review stationId={station.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
       </div>
     ))}
-
-
-
       </div>
+
+      {/* Second side panel*/}
+      {activeDetailPanel && (
+        <div className="detail-panel">
+          <h3>{activeDetailPanel.station_name}</h3>
+          {/* Include more detailed information here */}
+          <button onClick={() => setActiveDetailPanel(null)}>Close</button>
+        </div>
+      )}
     </>
   );
 };

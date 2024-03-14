@@ -39,170 +39,129 @@
 
 .navbar {
   display: flex;
-  justify-content: center; /* Center buttons horizontally */
-  align-items: center; /* Align buttons vertically */
-  flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   padding: 0px;
   background-color: #f0f0f0;
 }
 
 .nav-button {
   padding: 10px;
-  margin: 1px; /* Provide some space between buttons */
-  width: 15%; /* Let the width be determined by the content and padding */
+  margin: 1px;
+  width: 15%;
   max-width: 20%;
-
-  flex: 0 1 auto; /* Do not grow, but allow shrink, and base width on content */
+  flex: 0 1 auto;
   cursor: pointer;
   text-align: center;
 }
 
 .nav-button:hover {
-  background-color: #e0e0e0; /* Hover effect */
+  background-color: #e0e0e0;
 }
 
 @media screen and (max-width: 600px) {
-  .navbar {
-    display: flex;
-    justify-content: center; /* Center buttons horizontally */
-    align-items: center; /* Align buttons vertically */
-  }
-
+  .navbar,
   .nav-button {
-    padding: 10x; /* Larger padding for bigger tap targets */
-    
-    width: 30%; /* Button width fills more of the screen */
-    text-align: center;
+    width: 100%;
+    padding: 10px;
   }
 }
 
-/* Map container styles */
 .map-container {
-  width: 100%; /* Full width of its parent container */
-  height: 70vh; /* 70% of the viewport height */
+  width: 100%;
+  height: 70vh;
 }
 
-/* for stations */
 .station-info {
-  border: 1px solid #ccc; /* Adds a light grey border around each station info block */
-  padding: 15px; /* Adds padding inside each station info block for spacing */
-  margin-bottom: 20px; /* Adds margin below each station info block for spacing */
-  border-radius: 5px; /* Rounds the corners of the border */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adds a subtle shadow for depth */
-  background-color: #f9f9f9; /* Sets a light grey background color */
-  width: calc(100% - 30px); /* Ensures the width accounts for padding, making the layout more consistent */
-}
-
-.station-info p {
-  margin: 5px 0; /* Adds some vertical spacing between paragraphs within the station info */
-}
-
-
-.account-container {
-  text-align: center; /* Center-align text */
-  padding: 20px; /* Add some padding for better spacing */
-  margin: auto; /* Center the container itself if it has a set width */
-  max-width: 600px; /* Optional: Set a max-width for the container */
-}
-
-.account-info {
-  margin: 10px 0; /* Add some vertical spacing between account info lines */
-}
-
-/* Existing styles... */
-
-/* New styles for Google sign-in button */
-.google-signin-button {
-  display: flex;
-  justify-content: center;  /* Center the button horizontally */
-  margin: auto;             /* Auto margins on the sides to center the button in its container */
-  width: fit-content;       /* Let the button size be determined by its content */
-}
-
-.logo-container {
-  position: relative;
-  text-align: center;
-}
-
-.App-logo {
-  height: auto;
-  pointer-events: none;
-  max-width: 20%; /* Set the maximum width of the logo */
-  margin: auto; /* Center the logo horizontally */
-  display: block; /* Make the image block-level to respect margin: auto */
-}
-
-.App-logo-small {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%); /* Center the small logo horizontally */
-  max-width: 20%; /* Optionally set the maximum width of the small logo */
-  height: auto; /* Maintain aspect ratio */
-  /* Adjust the height or width as necessary to match the small logo size */
-}
-
-.logo-text {
-  text-align: center;
-  font-size: 60px; /* Example font size */
-  color: #1148c0; /* Example text color */
-  margin-top: 10px; /* Adjust spacing between the logo and the text */
-}
-.logo-text-small {
-  text-align: center;
-  font-size: 30px; /* Example font size */
-  color: #1148c0; /* Example text color */
-  margin-top: 1px; /* Adjust spacing between the logo and the text */
-}
-
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-/* Centering the Google sign-in button */
-#signInDiv {
-  display: flex;
-  justify-content: center;  /* Center children horizontally in the container */
-  align-items: center;      /* Center children vertically in the container */
-  width: 100%;              /* Take up the full width of its parent */
-  text-align: center;       /* Center the text inside the flex items (if any) */
-}
-
-
-/* Styles for review items */
-.review-item {
   border: 1px solid #ccc;
   padding: 15px;
   margin-bottom: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   background-color: #f9f9f9;
-  width: calc(100% - 30px); /* Match the width of review items, accounting for padding */
+  width: calc(100% - 30px);
 }
 
-/* Styles for the review textarea */
+.station-info p {
+  margin: 5px 0;
+}
+
+.account-container {
+  text-align: center;
+  padding: 20px;
+  margin: auto;
+  max-width: 600px;
+}
+
+.account-info {
+  margin: 10px 0;
+}
+
+.google-signin-button {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  width: fit-content;
+}
+
+.logo-container,
+.App-logo,
+.App-logo-small {
+  text-align: center;
+  max-width: 20%;
+  margin: auto;
+  display: block;
+}
+
+.App-logo-small {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo-text,
+.logo-text-small {
+  text-align: center;
+  color: #1148c0;
+  margin-top: 10px;
+}
+
+.logo-text-small {
+  font-size: 30px;
+  margin-top: 1px;
+}
+
+#signInDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.review-item,
 .review-textarea {
-  width: calc(100% - 30px); /* Match the width of review items, accounting for padding */
-  padding: 15px; /* Same padding as review items for consistency */
-  margin-bottom: 20px; /* Match the margin-bottom of review items */
-  border: 1px solid #ccc; /* Match the border style of review items */
-  border-radius: 5px; /* Match the border-radius of review items */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Match the box-shadow of review items */
-  resize: vertical; /* Allow vertical resizing only */
-  display: block; /* Ensure the textarea is block-level for full width */
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+  width: calc(100% - 30px);
+  resize: vertical;
+  display: block;
 }
 
-/* Styles for the review rating, email, and text within each review item */
 .review-item p {
-  margin: 5px 0; /* Add some vertical spacing between paragraphs */
+  margin: 5px 0;
 }
 
 .reviews-list {
-  max-height: 300px; /* Adjust based on your needs for maximum height */
-  overflow-y: auto; /* Enable vertical scrolling */
-  padding-right: 10px; /* Optional: Adds some space for the scrollbar */
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 /* Styles for the modal where reviews are displayed */
@@ -233,43 +192,78 @@
   font-size: 24px; /* Increase the font size of the 'X' */
 }
 
+.close-modal {
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  background-color: transparent;
+  font-size: 24px;
+}
+
 .delete-btn {
-  background-color: transparent; /* Makes the button background transparent */
-  border: none; /* Removes the border */
-  cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
-  color: rgb(122, 22, 22); /* Sets the icon color to red */
-  padding: 5px; /* Adds a bit of padding around the icon for easier clicking */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgb(122, 22, 22);
+  padding: 5px;
 }
 
 .delete-icon {
-  color: rgb(114, 25, 25); /* Ensures the FontAwesome icon is red */
+  color: rgb(114, 25, 25);
 }
-/* Wide screen!!!  Same as map container for alignment */
+
+/* Wide screen styles for the first and second side panels */
 @media screen and (min-width: 601px) {
   .map-container {
-    width: calc(100% - 250px); /* Adjust the width to account for the sidebar */
-    height: 100vh; /* Keep the same height */
-    float: right; /* Make the map container float to the right */
-    
+    width: calc(100% - 250px);
+    height: 100vh;
+    float: right;
   }
 
-  .station-info-container {
-    width: 250px; /* Width of the sidebar */
-    height: 100vh; /* Same as map container for alignment */
-    overflow-y: auto; /* Allow scrolling for overflow */
-    position: absolute; /* Use absolute positioning */
-    left: 0; /* Align to the left side of the viewport */
-    top: 20; /* Align to the top of the viewport */
-    background-color: #f9f9f9; /* Background color of the sidebar */
+  .station-info-container,
+  .detail-panel {
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    top: 22;
+    background-color: #f9f9f9;
+    z-index: 100; /* Ensure the first panel is below the second */
+  }
+
+  .detail-panel {
+    background-color: #e9ecef; /* Differentiate the second panel */
+    z-index: 102; /* Ensure it covers the first panel */
+    box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+    padding: 20px;
   }
 }
 
-/* CellPhone screen!!!  Same as map container for alignment */
 @media screen and (max-width: 600px) {
   .station-info-container {
-    display: block; /* Use block layout for smaller screens */
-    width: 100%; /* Full width of the screen */
+    display: block;
+    width: 100%;
+    background-color: #f9f9f9;
+    position: fixed; /* Ensure it's fixed for overlay positioning */
+    left: 0;
+    top: 200px;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Allow vertical scroll */
+    z-index: 100; /* Lower z-index than the detail panel */
+  }
+
+  .detail-panel {
+    display: block;
+    width: 100%;
+    background-color: #e9ecef; /* Differentiate the second panel */
+    position: fixed; /* Fixed position to overlay on top of the first panel */
+    left: 0;
+    top: 200px;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Allow vertical scroll */
+    z-index: 101; /* Higher z-index to overlay on top of the first panel */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Optional: Shadow for depth */
+    padding: 20px; /* Padding for content */
   }
 }
-
-
