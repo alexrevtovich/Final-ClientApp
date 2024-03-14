@@ -20,7 +20,7 @@ const Map: React.FC = () => {
   const [stationData, setStationData] = useState<StationData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]); //default value that is valid for sure
-  const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
+  // const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
   const [activeDetailPanel, setActiveDetailPanel] = useState<StationData | null>(null);
 
   // Memoize updateMyLocation using useCallback 
