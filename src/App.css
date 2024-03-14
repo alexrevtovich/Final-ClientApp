@@ -254,7 +254,7 @@
     background-color: #f9f9f9;
     position: fixed; /* Ensure it's fixed for overlay positioning */
     left: 0;
-    top: 200px;
+    top: 50%;
     height: 100vh; /* Full viewport height */
     overflow-y: auto; /* Allow vertical scroll */
     z-index: 100; /* Lower z-index than the detail panel */
@@ -266,7 +266,7 @@
     background-color: #e9ecef; /* Differentiate the second panel */
     position: fixed; /* Fixed position to overlay on top of the first panel */
     left: 0;
-    top: 200px;
+    top: 50%;
     height: 100vh; /* Full viewport height */
     overflow-y: auto; /* Allow vertical scroll */
     z-index: 101; /* Higher z-index to overlay on top of the first panel */
