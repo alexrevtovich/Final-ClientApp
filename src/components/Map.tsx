@@ -41,29 +41,28 @@ const Map: React.FC = () => {
   
 
   // Define fetchAndDisplayStations function using useCallback
-  const fetchAndDisplayStations = useCallback(async (location: string) => {
-    setError(null);
-    try {
-      const stationsData = await fetchStations(location);
-      setStationData(stationsData);
+    const fetchAndDisplayStations = useCallback(async (location: string) => {
+        setError(null);
+        try {
+            const stationsData = await fetchStations(location);
+            setStationData(stationsData);
 
-      if (stationsData.length > 0 && mapInstanceRef.current) {
-        mapInstanceRef.current.setCamera({
-          center: [stationsData[0].longitude, stationsData[0].latitude],
-          zoom: 15,
-        });
-      
-        // Pass only stationsData and mapInstanceRef.current to addPinsToMap
-        addPinsToMap(stationsData, mapInstanceRef.current, setActiveDetailPanel);
+            if (stationsData.length > 0 && mapInstanceRef.current) {
+                mapInstanceRef.current.setCamera({
+                    center: [stationsData[0].longitude, stationsData[0].latitude],
+                    zoom: 15,
+                });
 
-      } else {
-        setError('No stations found for the provided location.');
-      }
-    } catch (error) {
-      console.error('Error fetching stations:', error);
-      setError('Failed to fetch station data. Please try again.');
-    }
-  }, []); // Remove myLocation from the dependency array
+                addPinsToMap(stationsData, mapInstanceRef.current, setActiveDetailPanel); // Assuming this is correctly implemented elsewhere
+            } else {
+                setError('No stations found for the provided location.');
+            }
+        } catch (error) {
+            console.error('Error fetching stations:', error);
+            setError('Failed to fetch station data. Please try again.');
+        }
+    }, []); // Add any external dependencies here if they exist
+
 
 
 
@@ -83,45 +82,39 @@ const Map: React.FC = () => {
 
   // Initialize map and fetch stations data around the user's location
   useEffect(() => {
-    if (mapRef.current && !mapInstanceRef.current) {
-      const initializeMap = async () => {
-        let initialLocation = myLocation; // Use myLocation directly
-  
-        if (mapRef.current) {
-          const map = new atlas.Map(mapRef.current, {
-            authOptions: {
-              authType: atlas.AuthenticationType.subscriptionKey,
-              subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
-            },
-            center: initialLocation,
-            zoom: 15,
-            style: 'road',
-          });
-  
-          map.events.add('ready', async () => {
-            mapInstanceRef.current = map;
-            datasourceRef.current = new atlas.source.DataSource();
-            map.sources.add(datasourceRef.current);
-  
-            // Instead of awaiting, directly call the function
-            // Also ensure fetchAndDisplayStations can handle awaiting internally if necessary
-            fetchAndDisplayStations(`${initialLocation[0]},${initialLocation[1]}`).then(() => {
-              // Only after stations are fetched and displayed, add pins to the map
-              // Now include setActiveDetailPanel as a parameter to handle pin clicks
-              if (stationData.length > 0) {
-                addPinsToMap(stationData, map, setActiveDetailPanel);
-              }
+    const initializeMap = async () => {
+        if (mapRef.current && !mapInstanceRef.current) {
+            // Define initial location, fallback to a default if myLocation isn't set yet
+            let initialLocation = myLocation || [29.7174, -95.4028];
+
+            // Create a new map instance
+            const map = new atlas.Map(mapRef.current, {
+                authOptions: {
+                    authType: atlas.AuthenticationType.subscriptionKey,
+                    subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
+                },
+                center: initialLocation,
+                zoom: 15,
+                style: 'road',
             });
-          });
-        } else {
-          console.error("Map container div not found");
+
+            // Setup event listener for when the map is ready
+            map.events.add('ready', () => {
+                mapInstanceRef.current = map;
+                datasourceRef.current = new atlas.source.DataSource();
+                map.sources.add(datasourceRef.current);
+                
+                // Construct the location string and fetch stations
+                const locationStr = `${initialLocation[0]},${initialLocation[1]}`;
+                fetchAndDisplayStations(locationStr);
+            });
         }
-      };
-  
-      initializeMap();
-    }
-  }, [myLocation]); // Removed fetchAndDisplayStations from dependencies to avoid confusion, ensure it's correctly used within useEffect
-  
+    };
+
+    // Call the async function
+    initializeMap();
+}, [myLocation, fetchAndDisplayStations]);  
+
 
   // Update map's camera when myLocation changes
   useEffect(() => {
