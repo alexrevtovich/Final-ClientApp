@@ -54,7 +54,7 @@ const Map: React.FC = () => {
         });
       
         // Pass only stationsData and mapInstanceRef.current to addPinsToMap
-        addPinsToMap(stationsData, mapInstanceRef.current, handleStationSelect, myLocationRef.current);
+        addPinsToMap(stationsData, mapInstanceRef.current, handleStationSelect, myLocationRef.current, setActiveDetailPanel);
 
       } else {
         setError('No stations found for the provided location.');

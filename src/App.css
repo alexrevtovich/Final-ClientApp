@@ -105,20 +105,27 @@
   width: fit-content;
 }
 
-.logo-container,
-.App-logo,
-.App-logo-small {
+.logo-container {
+  position: relative;
   text-align: center;
-  max-width: 20%;
-  margin: auto;
-  display: block;
+}
+
+.App-logo {
+  height: auto;
+  pointer-events: none;
+  max-width: 20%; /* Set the maximum width of the logo */
+  margin: auto; /* Center the logo horizontally */
+  display: block; /* Make the image block-level to respect margin: auto */
 }
 
 .App-logo-small {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); /* Center the small logo horizontally */
+  max-width: 20%; /* Optionally set the maximum width of the small logo */
+  height: auto; /* Maintain aspect ratio */
+  /* Adjust the height or width as necessary to match the small logo size */
 }
 
 .logo-text,
