@@ -54,7 +54,7 @@ const Map: React.FC = () => {
         });
       
         // Pass only stationsData and mapInstanceRef.current to addPinsToMap
-        addPinsToMap(stationsData, mapInstanceRef.current, handleStationSelect, myLocationRef.current, setActiveDetailPanel);
+        addPinsToMap(stationsData, mapInstanceRef.current, setActiveDetailPanel);
 
       } else {
         setError('No stations found for the provided location.');
@@ -83,51 +83,45 @@ const Map: React.FC = () => {
 
   // Initialize map and fetch stations data around the user's location
   useEffect(() => {
-    if (mapRef.current && !mapInstanceRef.current) { 
-    // Check if the map element exists and the map instance hasn't been initialized yet
-    
-    const initializeMap = async () => {
-      // Default location
-      let initialLocation = [29.7174, -95.4028];
-      
-    
-      // Check if user's location is available
-      if (myLocation) {
-        initialLocation = myLocation;
-      }
-    
-      // Ensure mapRef.current is not null before proceeding
-      if (mapRef.current) {
-        // Create a new map instance
-        const map = new atlas.Map(mapRef.current, {
-          authOptions: {
-            authType: atlas.AuthenticationType.subscriptionKey,
-            subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
-          },
-          center: initialLocation, // Use the default or user's location
-          zoom: 15,
-          style: 'road',
-        });
-    
-        // Add event listener for when the map is ready
-        map.events.add('ready', async () => {
-          mapInstanceRef.current = map;
-          datasourceRef.current = new atlas.source.DataSource();
-          map.sources.add(datasourceRef.current);
-    
-          // Fetch and display stations data around the default or user's location
-          const locationStr = `${initialLocation[0]},${initialLocation[1]}`;
-          await fetchAndDisplayStations(locationStr);
-        });
-      } else {
-        console.error("Map container div not found");
-      }
-    };
-    
-
-    initializeMap();
-  }
-}, [myLocation, fetchAndDisplayStations]); // Depend on myLocation and fetchAndDisplayStations
+    if (mapRef.current && !mapInstanceRef.current) {
+      const initializeMap = async () => {
+        let initialLocation = myLocation; // Use myLocation directly
+  
+        if (mapRef.current) {
+          const map = new atlas.Map(mapRef.current, {
+            authOptions: {
+              authType: atlas.AuthenticationType.subscriptionKey,
+              subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
+            },
+            center: initialLocation,
+            zoom: 15,
+            style: 'road',
+          });
+  
+          map.events.add('ready', async () => {
+            mapInstanceRef.current = map;
+            datasourceRef.current = new atlas.source.DataSource();
+            map.sources.add(datasourceRef.current);
+  
+            // Instead of awaiting, directly call the function
+            // Also ensure fetchAndDisplayStations can handle awaiting internally if necessary
+            fetchAndDisplayStations(`${initialLocation[0]},${initialLocation[1]}`).then(() => {
+              // Only after stations are fetched and displayed, add pins to the map
+              // Now include setActiveDetailPanel as a parameter to handle pin clicks
+              if (stationData.length > 0) {
+                addPinsToMap(stationData, map, setActiveDetailPanel);
+              }
+            });
+          });
+        } else {
+          console.error("Map container div not found");
+        }
+      };
+  
+      initializeMap();
+    }
+  }, [myLocation]); // Removed fetchAndDisplayStations from dependencies to avoid confusion, ensure it's correctly used within useEffect
+  
 
   // Update map's camera when myLocation changes
   useEffect(() => {
@@ -227,7 +221,7 @@ const Map: React.FC = () => {
     ))}
       </div>
 
-      {/* Second side panel*/}
+      {/* Second side panel, similar to the first one but uses the activeDetailPanel state */}
       {activeDetailPanel && (
         <div className="detail-panel">
           <h3>{activeDetailPanel.station_name}</h3>
