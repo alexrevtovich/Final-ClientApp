@@ -208,19 +208,26 @@ const Map: React.FC = () => {
 
         <button onClick={() => handleDetailsClick(station)}>Details</button>
 
-        <button onClick={() => handleStationSelect(station, myLocation)}>Select</button>
-        <Review stationId={station.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
+        
+        
       </div>
     ))}
       </div>
 
-      {/* Second side panel, similar to the first one but uses the activeDetailPanel state */}
+      {/* Detail side panel */}
       {activeDetailPanel && (
-        <div className="detail-panel">
-          <h3>{activeDetailPanel.station_name}</h3>
-          {/* Include more detailed information here */}
-          <button onClick={() => setActiveDetailPanel(null)}>Close</button>
+      <div className="detail-panel">
+        <h3>{activeDetailPanel.station_name}</h3>
+        <div>
+          <p>Rating: {activeDetailPanel.averageRating === 0 ? "This station hasn't been rated yet" : activeDetailPanel.averageRating}</p>
+          {activeDetailPanel.averageRating > 0 && <StarRating rating={activeDetailPanel.averageRating} />}
         </div>
+        <p>Connector Types: {activeDetailPanel.ev_connector_types?.join(', ')}</p>
+        <p>Distance: {activeDetailPanel.distance?.toFixed(2)} miles</p>
+        <button onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Select</button>
+        <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
+        <button onClick={() => setActiveDetailPanel(null)}>Close</button>
+      </div>
       )}
     </>
   );
