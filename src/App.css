@@ -244,5 +244,32 @@
 .delete-icon {
   color: rgb(114, 25, 25); /* Ensures the FontAwesome icon is red */
 }
+/* Wide screen!!!  Same as map container for alignment */
+@media screen and (min-width: 601px) {
+  .map-container {
+    width: calc(100% - 250px); /* Adjust the width to account for the sidebar */
+    height: 100vh; /* Keep the same height */
+    float: right; /* Make the map container float to the right */
+    
+  }
+
+  .station-info-container {
+    width: 250px; /* Width of the sidebar */
+    height: 100vh; /* Same as map container for alignment */
+    overflow-y: auto; /* Allow scrolling for overflow */
+    position: absolute; /* Use absolute positioning */
+    left: 0; /* Align to the left side of the viewport */
+    top: 20; /* Align to the top of the viewport */
+    background-color: #f9f9f9; /* Background color of the sidebar */
+  }
+}
+
+/* CellPhone screen!!!  Same as map container for alignment */
+@media screen and (max-width: 600px) {
+  .station-info-container {
+    display: block; /* Use block layout for smaller screens */
+    width: 100%; /* Full width of the screen */
+  }
+}
 
 

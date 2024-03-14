@@ -202,7 +202,7 @@ const Map: React.FC = () => {
       </div>
       <div ref={mapRef} className="map-container" />
       {error && <p className="error-message">{error}</p>}
-      <div>
+      <div className="station-info-container">
           {stationData.map((station, index) => (
       <div key={index} className="station-info">
         <p>Station Name: {station.station_name}</p>
