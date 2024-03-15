@@ -1,7 +1,5 @@
-// Utils/stations.tsx
-import axios from 'axios';
+import axios from "axios";
 
-// Define the type for the station data for better type safety
 export type StationData = {
   id: number;
   station_name: string;
@@ -9,13 +7,14 @@ export type StationData = {
   latitude: number;
   longitude: number;
   street_address: string;
-  zip: string;
   ev_connector_types: string[];
   distance: number;
   averageRating: number;
+  ev_dc_fast_num: number | null; 
+  ev_level2_evse_num: number | null;
+  ev_pricing: string; 
 };
 
-// Function to fetch and filter station data
 export async function fetchStations(location: string): Promise<StationData[]> {
   const API_URL = `https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json`;
   const API_KEY = 'YRZ8wDuqPO3Ov5XeQhvKkaR6Zvw0afc7WlBNbdm6';
@@ -29,29 +28,26 @@ export async function fetchStations(location: string): Promise<StationData[]> {
       latitude: station.latitude,
       longitude: station.longitude,
       street_address: station.street_address,
-      zip: station.zip,
       ev_connector_types: station.ev_connector_types,
       distance: station.distance,
-      averageRating: "There is no rating yet" // Default value
+      averageRating: "There is no rating yet",
+      ev_dc_fast_num: station.ev_dc_fast_num,
+      ev_level2_evse_num: station.ev_level2_evse_num,
+      ev_pricing: station.ev_pricing || "Pricing information not available", // Default value
     }));
 
-    // Fetch average ratings for all stations
     const ratingsPromises = stations.map(async (station: any) => {
       try {
         const ratingResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/getrating', {
           stationId: station.id,
         });
-
-        // Update the averageRating of the station if the response is successful
         station.averageRating = ratingResponse.data.averageRating;
       } catch (error) {
         console.error(`Failed to fetch average rating for stationId ${station.id}:`, error);
-        // Keep the default averageRating if the request fails
       }
       return station;
     });
 
-    // Wait for all rating requests to complete and update stations data
     stations = await Promise.all(ratingsPromises);
 
     return stations;
