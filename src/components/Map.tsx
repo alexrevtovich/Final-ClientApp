@@ -224,11 +224,14 @@ const Map: React.FC = () => {
         </div>
         <p>Connector Types: {activeDetailPanel.ev_connector_types?.join(', ')}</p>
         <p>Distance: {activeDetailPanel.distance?.toFixed(2)} miles</p>
+        <p>DC Fast Chargers: {activeDetailPanel.ev_dc_fast_num !== null ? activeDetailPanel.ev_dc_fast_num : "None"}</p>
+        <p>Level 2 EVSE: {activeDetailPanel.ev_level2_evse_num !== null ? activeDetailPanel.ev_level2_evse_num : "Information not available"}</p>
+        <p>Pricing: {activeDetailPanel.ev_pricing}</p>
         <button onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Select</button>
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
         <button onClick={() => setActiveDetailPanel(null)}>Close</button>
       </div>
-      )}
+    )}
     </>
   );
 };

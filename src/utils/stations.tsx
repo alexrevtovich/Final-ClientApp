@@ -33,7 +33,7 @@ export async function fetchStations(location: string): Promise<StationData[]> {
       averageRating: "There is no rating yet",
       ev_dc_fast_num: station.ev_dc_fast_num,
       ev_level2_evse_num: station.ev_level2_evse_num,
-      ev_pricing: station.ev_pricing || "Pricing information not available", // Default value
+      ev_pricing: station.ev_pricing || "Not available", // Default value
     }));
 
     const ratingsPromises = stations.map(async (station: any) => {
