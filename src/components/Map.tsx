@@ -10,6 +10,7 @@ import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review'; 
 import StarRating from '../utils/starRating';
+import chargeCar from '../utils/chargeCar'; 
 
 const Map: React.FC = () => {
   const navigate = useNavigate();
@@ -19,60 +20,48 @@ const Map: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [stationData, setStationData] = useState<StationData[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]); //default value that is valid for sure
-  // const myLocationRef = useRef<[number, number]>(myLocation); // Ref to hold the current location
+  const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]);
   const [activeDetailPanel, setActiveDetailPanel] = useState<StationData | null>(null);
 
-  // Memoize updateMyLocation using useCallback 
-  //check myLocation later
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
-    // Directly use setMyLocation since it's stable and doesn't change
     setMyLocation((currentLocation) => {
       const newLocation = typeof value === 'function' ? value(currentLocation) : value;
 
       if (typeof newLocation[0] === 'number' && typeof newLocation[1] === 'number') {
-        return newLocation; // Return newLocation directly
+        return newLocation;
       } else {
         console.error('Tried to set invalid myLocation:', newLocation);
-        return [29.7174, -95.4028]; // Return default location
+        return [29.7174, -95.4028];
       }
     });
   }, []);
-  
 
-  // Define fetchAndDisplayStations function using useCallback
-    const fetchAndDisplayStations = useCallback(async (location: string) => {
-        setError(null);
-        try {
-            const stationsData = await fetchStations(location);
-            setStationData(stationsData);
+  const fetchAndDisplayStations = useCallback(async (location: string) => {
+    setError(null);
+    try {
+      const stationsData = await fetchStations(location);
+      setStationData(stationsData);
 
-            if (stationsData.length > 0 && mapInstanceRef.current) {
-                mapInstanceRef.current.setCamera({
-                    center: [stationsData[0].longitude, stationsData[0].latitude],
-                    zoom: 15,
-                });
+      if (stationsData.length > 0 && mapInstanceRef.current) {
+        mapInstanceRef.current.setCamera({
+          center: [stationsData[0].longitude, stationsData[0].latitude],
+          zoom: 15,
+        });
 
-                addPinsToMap(stationsData, mapInstanceRef.current, setActiveDetailPanel); // Assuming this is correctly implemented elsewhere
-            } else {
-                setError('No stations found for the provided location.');
-            }
-        } catch (error) {
-            console.error('Error fetching stations:', error);
-            setError('Failed to fetch station data. Please try again.');
-        }
-    }, []); // Add any external dependencies here if they exist
+        addPinsToMap(stationsData, mapInstanceRef.current, setActiveDetailPanel);
+      } else {
+        setError('No stations found for the provided location.');
+      }
+    } catch (error) {
+      console.error('Error fetching stations:', error);
+      setError('Failed to fetch station data. Please try again.');
+    }
+  }, []);
 
-
-
-
-  // Fetch the user's location and set it to state
   useEffect(() => {
-    getMyLocation(updateMyLocation); // Pass updateMyLocation to getMyLocation
+    getMyLocation(updateMyLocation);
   }, [updateMyLocation]);
 
-
-  // Redirect to login if user email is not found in session storage
   useEffect(() => {
     if (!sessionStorage.getItem('userEmail')) {
       console.log('No user email found, redirecting to login...');
@@ -80,43 +69,35 @@ const Map: React.FC = () => {
     }
   }, [navigate]);
 
-  // Initialize map and fetch stations data around the user's location
   useEffect(() => {
     const initializeMap = async () => {
-        if (mapRef.current && !mapInstanceRef.current) {
-            // Define initial location, fallback to a default if myLocation isn't set yet
-            let initialLocation = myLocation || [29.7174, -95.4028];
+      if (mapRef.current && !mapInstanceRef.current) {
+        let initialLocation = myLocation || [29.7174, -95.4028];
 
-            // Create a new map instance
-            const map = new atlas.Map(mapRef.current, {
-                authOptions: {
-                    authType: atlas.AuthenticationType.subscriptionKey,
-                    subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
-                },
-                center: initialLocation,
-                zoom: 15,
-                style: 'road',
-            });
+        const map = new atlas.Map(mapRef.current, {
+          authOptions: {
+            authType: atlas.AuthenticationType.subscriptionKey,
+            subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
+          },
+          center: initialLocation,
+          zoom: 15,
+          style: 'road',
+        });
 
-            // Setup event listener for when the map is ready
-            map.events.add('ready', () => {
-                mapInstanceRef.current = map;
-                datasourceRef.current = new atlas.source.DataSource();
-                map.sources.add(datasourceRef.current);
-                
-                // Construct the location string and fetch stations
-                const locationStr = `${initialLocation[0]},${initialLocation[1]}`;
-                fetchAndDisplayStations(locationStr);
-            });
-        }
+        map.events.add('ready', () => {
+          mapInstanceRef.current = map;
+          datasourceRef.current = new atlas.source.DataSource();
+          map.sources.add(datasourceRef.current);
+          
+          const locationStr = `${initialLocation[0]},${initialLocation[1]}`;
+          fetchAndDisplayStations(locationStr);
+        });
+      }
     };
 
-    // Call the async function
     initializeMap();
-}, [myLocation, fetchAndDisplayStations]);  
+  }, [myLocation, fetchAndDisplayStations]);
 
-
-  // Update map's camera when myLocation changes
   useEffect(() => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setCamera({
@@ -126,7 +107,6 @@ const Map: React.FC = () => {
     }
   }, [myLocation]);
 
-  // Fetch the user's address based on myLocation
   useEffect(() => {
     const fetchAndSetAddress = async () => {
       const address = await reverseGeocode(myLocation);
@@ -136,19 +116,16 @@ const Map: React.FC = () => {
     fetchAndSetAddress();
   }, [myLocation]);
 
-  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  // Handle form submission
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent) => {
     e.preventDefault();
     const locationStr = inputValue ? inputValue : `${myLocation[0]},${myLocation[1]}`;
     fetchAndDisplayStations(locationStr);
   };
 
-  // Handle key down event
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const locationStr = inputValue ? inputValue : `${myLocation[0]},${myLocation[1]}`;
@@ -156,7 +133,6 @@ const Map: React.FC = () => {
     }
   };
 
-  // Handle station selection
   const handleStationSelect = async (station: StationData, currentLocation: [number, number]) => {
     if (!mapInstanceRef.current || !datasourceRef.current) {
       console.error("Map instance or datasource is not available");
@@ -176,9 +152,26 @@ const Map: React.FC = () => {
   const handleDetailsClick = (station: StationData) => {
     setActiveDetailPanel(station);
   };
+
+  const handleChargeHereClick = () => {
+    if (!activeDetailPanel) {
+      console.error("No station selected.");
+      return;
+    }
   
-
-
+    // Prepare payload for charging
+    const payload = {
+      charge: 80, // Dummy charge value for now
+      usable_battery_size: 37.9, // Dummy usable_battery_size value for now
+      ACMaxPower: 11.0, // Dummy ACMaxPower value for now
+      DCCharger: true, // Assuming the car has DC charging capability
+      station_DC: activeDetailPanel.ev_dc_fast_num !== null ? true : false // Determine station_DC based on the presence of DC fast chargers
+    };
+  
+    // Call the chargeCar function
+    chargeCar(payload);
+  };
+  
 
   return (
     <>
@@ -205,16 +198,11 @@ const Map: React.FC = () => {
         </div>
         <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
         <p>Distance: {station.distance?.toFixed(2)} miles</p>
-
         <button onClick={() => handleDetailsClick(station)}>Details</button>
-
-        
-        
       </div>
     ))}
       </div>
 
-      {/* Detail side panel */}
       {activeDetailPanel && (
       <div className="detail-panel">
         <h3>{activeDetailPanel.station_name}</h3>
@@ -225,11 +213,12 @@ const Map: React.FC = () => {
         <p>Connector Types: {activeDetailPanel.ev_connector_types?.join(', ')}</p>
         <p>Distance: {activeDetailPanel.distance?.toFixed(2)} miles</p>
         <p>DC Fast Chargers: {activeDetailPanel.ev_dc_fast_num !== null ? activeDetailPanel.ev_dc_fast_num : "None"}</p>
-        <p>Level 2 EVSE: {activeDetailPanel.ev_level2_evse_num !== null ? activeDetailPanel.ev_level2_evse_num : "Information not available"}</p>
+        <p>Level 2 EVSE: {activeDetailPanel.ev_level2_evse_num !== null ? activeDetailPanel.ev_level2_evse_num : "None"}</p>
         <p>Pricing: {activeDetailPanel.ev_pricing}</p>
         <button onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Select</button>
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
         <button onClick={() => setActiveDetailPanel(null)}>Close</button>
+        <button onClick={handleChargeHereClick}>Charge Here</button> {/* New "Charge Here" button */}
       </div>
     )}
     </>
