@@ -11,7 +11,7 @@ import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review'; 
 import StarRating from '../utils/starRating';
 import chargeCar from '../utils/chargeCar'; 
-import { initSignalRConnection, sendChargingStatus } from '../utils/SignalR';
+
 
 
 const Map: React.FC = () => {
