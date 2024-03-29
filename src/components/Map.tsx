@@ -11,6 +11,8 @@ import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review'; 
 import StarRating from '../utils/starRating';
 import chargeCar from '../utils/chargeCar'; 
+import { initSignalRConnection, sendChargingStatus } from '../utils/SignalR';
+
 
 const Map: React.FC = () => {
   const navigate = useNavigate();
@@ -115,6 +117,7 @@ const Map: React.FC = () => {
 
     fetchAndSetAddress();
   }, [myLocation]);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
