@@ -29,6 +29,18 @@ const Map: React.FC = () => {
   const [activeDetailPanel, setActiveDetailPanel] = useState<StationData | null>(null);
   const [currentRoute, setCurrentRoute] = useState<string | null>(null);
   const [isStationInfoVisible, setIsStationInfoVisible] = useState(true); // State to track visibility
+  const [isDetailPanelVisible, setIsDetailPanelVisible] = useState(true); // State to track visibility
+
+  const toggleVisibility = () => {
+    const newVisibility = !isStationInfoVisible;
+    setIsStationInfoVisible(newVisibility);
+    
+    // Ensure the detail panel visibility is linked to the station info container's visibility
+    if (activeDetailPanel) {
+      setIsDetailPanelVisible(newVisibility);
+    }
+  };
+
 
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
     setMyLocation((currentLocation) => {
@@ -210,17 +222,13 @@ const Map: React.FC = () => {
       setError('Failed to fetch stations along the route. Please try again.');
     }
   };
-  
-  // Toggle function
-  const toggleStationInfoVisibility = () => {
-    setIsStationInfoVisible(!isStationInfoVisible);
-  };
+
   
 
   return (
     <>
       {/* Toggle Button */}
-      <button onClick={toggleStationInfoVisibility} style={{ position: 'absolute', zIndex: 1050, left: '10px', top: '10px' }}>
+      <button onClick={toggleVisibility} className="toggle-station-info">
         {isStationInfoVisible ? 'Hide' : 'Show'}
       </button>
 
@@ -256,9 +264,12 @@ const Map: React.FC = () => {
         </div>
       )}
 
-      {activeDetailPanel && (
+      {isDetailPanelVisible && activeDetailPanel && (
       <div className="detail-panel">
-        <h3>{activeDetailPanel.station_name}</h3>
+          <div className="detail-panel-header">
+            <h3 className="detail-panel-title">{activeDetailPanel.station_name}</h3>
+            <button onClick={() => setActiveDetailPanel(null)} className="close-button">X</button>
+          </div>
         <hr /> {/* Separation line */}
         <div>
           <p>Rating: {activeDetailPanel.averageRating === 0 ? "This station hasn't been rated yet" : activeDetailPanel.averageRating}</p>
@@ -272,7 +283,7 @@ const Map: React.FC = () => {
         <button onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Direction</button>
         
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
-        <button onClick={() => setActiveDetailPanel(null)}>Close</button>
+        
         <button onClick={handleChargeHereClick}>Charge Here</button> {/* New "Charge Here" button */}
         <hr /> {/* Separation line */}
         <button onClick={handleTripClick}>Show stations along the route</button>
