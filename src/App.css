@@ -7,6 +7,11 @@
   pointer-events: none;
 }
 
+body {
+  background-color: #f0f2f5; /* background color */
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -47,6 +52,7 @@
   left: 50%;
   transform: translateX(-50%); /* Center navbar horizontally */
   z-index: 2; /* Ensure navbar is above the map */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
 }
 
 .nav-button {
@@ -149,7 +155,9 @@
   padding: 20px;
   margin: auto;
   max-width: 600px;
+  height: 95vh;
   background-color: #f7fbfd; /* Light blue background */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .account-container h2 {
