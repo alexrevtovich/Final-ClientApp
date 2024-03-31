@@ -273,7 +273,7 @@
     justify-content: flex-start; /* Align items to the start */
     align-items: center;
     top: 41px; /* Directly below the navbar, adjust if your navbar's height is different */
-    padding: 10px 20px; /* Adjust padding to match your design */
+    padding: 10px 10px; /* Adjust padding to match your design */
     box-sizing: border-box;
     background-color: #e9ecef;
     width: 250px;
@@ -312,8 +312,18 @@
 
 @media screen and (max-width: 600px) {
 
+  .search-container {
+    top: 60px; /* 60 pixels lower than its default position */
+    position: fixed;
+    left: 0;
+
+    width: 100%; /* Ensure the container spans the full width */
+    padding: 1px 10px; /* Adjust padding as needed */
+    z-index: 100;
+  }
+
   .toggle-station-info {
-    top: 60px; /* 40 pixels lower than its default position */
+    top: 90px; /* 60 pixels lower than its default position */
     /* Keep the rest of the properties unchanged */
   }
 
