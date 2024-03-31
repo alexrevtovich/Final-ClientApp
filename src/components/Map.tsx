@@ -31,6 +31,7 @@ const Map: React.FC = () => {
   const [isStationInfoVisible, setIsStationInfoVisible] = useState(true); // State to track visibility
   const [isDetailPanelVisible, setIsDetailPanelVisible] = useState(true); // State to track visibility
 
+
   const toggleVisibility = () => {
     const newVisibility = !isStationInfoVisible;
     setIsStationInfoVisible(newVisibility);
@@ -45,7 +46,9 @@ const Map: React.FC = () => {
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
     setMyLocation((currentLocation) => {
       const newLocation = typeof value === 'function' ? value(currentLocation) : value;
-
+      
+      console.log("Updating myLocation to:", newLocation[0], "Lat,", newLocation[1], "Long");
+  
       if (typeof newLocation[0] === 'number' && typeof newLocation[1] === 'number') {
         return newLocation;
       } else {
@@ -54,6 +57,7 @@ const Map: React.FC = () => {
       }
     });
   }, []);
+  
 
   const fetchAndDisplayStations = useCallback(async (location: string) => {
     setError(null);
@@ -229,7 +233,7 @@ const Map: React.FC = () => {
     <>
       {/* Toggle Button */}
       <button onClick={toggleVisibility} className="toggle-station-info">
-        {isStationInfoVisible ? '↑↑↑' : '↓↓↓'}
+        {isStationInfoVisible ? '↓↓↓' : '↑↑↑'}
       </button>
 
       <div className="search-container">
