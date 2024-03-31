@@ -11,6 +11,9 @@ import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review'; 
 import StarRating from '../utils/starRating';
 import chargeCar from '../utils/chargeCar'; 
+import { fetchStationsAlongRoute } from '../utils/trip';
+
+
 
 
 
@@ -24,6 +27,7 @@ const Map: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]);
   const [activeDetailPanel, setActiveDetailPanel] = useState<StationData | null>(null);
+  const [currentRoute, setCurrentRoute] = useState<string | null>(null);
 
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
     setMyLocation((currentLocation) => {
@@ -146,6 +150,8 @@ const Map: React.FC = () => {
       const route = await getRouteDirections(currentLocation, [station.latitude, station.longitude]);
       datasourceRef.current.clear();
       renderRouteOnMap(route, mapInstanceRef.current, datasourceRef.current);
+      //for the trip
+      setCurrentRoute(`LINESTRING(${route.points.map(p => `${p.longitude} ${p.latitude}`).join(", ")})`);
     } catch (error) {
       console.error("Error fetching or rendering route:", error);
       setError("Failed to display route. Please try again.");
@@ -174,6 +180,36 @@ const Map: React.FC = () => {
     // Call the chargeCar function
     chargeCar(payload);
   };
+
+  const handleTripClick = async () => {
+    if (!currentRoute) {
+      console.log("No route selected.");
+      return;
+    }
+  
+    try {
+      const stationsAlongRoute = await fetchStationsAlongRoute({
+        linestring: currentRoute,
+        distance: 5, // Set the distance as needed
+      });
+  
+      setStationData(stationsAlongRoute);
+      if (stationsAlongRoute.length > 0 && mapInstanceRef.current) {
+        mapInstanceRef.current.setCamera({
+          center: [stationsAlongRoute[0].longitude, stationsAlongRoute[0].latitude],
+          zoom: 15,
+        });
+  
+        addPinsToMap(stationsAlongRoute, mapInstanceRef.current, setActiveDetailPanel);
+      } else {
+        setError('No stations found along the selected route.');
+      }
+    } catch (error) {
+      console.error('Error fetching stations along the route:', error);
+      setError('Failed to fetch stations along the route. Please try again.');
+    }
+  };
+  
   
 
   return (
@@ -222,6 +258,9 @@ const Map: React.FC = () => {
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
         <button onClick={() => setActiveDetailPanel(null)}>Close</button>
         <button onClick={handleChargeHereClick}>Charge Here</button> {/* New "Charge Here" button */}
+        <button onClick={handleTripClick}>Trip</button>
+
+
       </div>
     )}
     </>
