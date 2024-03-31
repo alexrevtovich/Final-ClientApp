@@ -14,13 +14,13 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
   for (let i = 1; i <= totalStars; i++) {
     if (i <= Math.floor(rating)) {
       // Full star
-      stars.push(<FontAwesomeIcon key={i} icon={faStar} />);
+      stars.push(<span className="star-icon" key={i}><FontAwesomeIcon icon={faStar} /></span>);
     } else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
       // Half star, only added if the rating has a fractional part
-      stars.push(<FontAwesomeIcon key={i} icon={faStarHalfAlt} />);
+      stars.push(<span className="star-icon" key={i}><FontAwesomeIcon icon={faStarHalfAlt} /></span>);
     } else {
       // Empty star
-      stars.push(<FontAwesomeIcon key={i} icon={farStar} />);
+      stars.push(<span className="star-icon" key={i}><FontAwesomeIcon icon={farStar} /></span>);
     }
   }
 

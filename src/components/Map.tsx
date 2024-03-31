@@ -229,7 +229,7 @@ const Map: React.FC = () => {
     <>
       {/* Toggle Button */}
       <button onClick={toggleVisibility} className="toggle-station-info">
-        {isStationInfoVisible ? 'Hide' : 'Show'}
+        {isStationInfoVisible ? '↑↑↑' : '↓↓↓'}
       </button>
 
       <div className="search-container">
@@ -272,7 +272,9 @@ const Map: React.FC = () => {
           </div>
         <hr /> {/* Separation line */}
         <div>
-          <p>Rating: {activeDetailPanel.averageRating === 0 ? "This station hasn't been rated yet" : activeDetailPanel.averageRating}</p>
+          <p className="rating-text">
+            Rating: {activeDetailPanel.averageRating === 0 ? "This station hasn't been rated yet" : activeDetailPanel.averageRating}
+          </p>
           {activeDetailPanel.averageRating > 0 && <StarRating rating={activeDetailPanel.averageRating} />}
         </div>
         <p>Connector Types: {activeDetailPanel.ev_connector_types?.join(', ')}</p>

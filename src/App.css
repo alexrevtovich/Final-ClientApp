@@ -62,6 +62,17 @@
   background-color: #d0d0d0;
 }
 
+.rating-text {
+  color: #000000; /* Example color: blue. Replace with any color you like. */
+  /* Add any additional styling you want for the rating text here */
+}
+
+.star-icon .svg-inline--fa {
+  color: #3c77bb; /* Gold color for stars */
+  font-size: 20px; /* Adjust the size of the stars */
+}
+
+
 @media screen and (max-width: 600px) {
   .navbar,
   .nav-button {
@@ -193,6 +204,7 @@
 
 .review-item p {
   margin: 5px 0;
+  color: #1148c0;
 }
 
 .reviews-list {
@@ -323,8 +335,10 @@
   }
 
   .toggle-station-info {
-    top: 90px; /* 60 pixels lower than its default position */
-    /* Keep the rest of the properties unchanged */
+    top: 63px; /* 60 pixels lower than its default position */
+    right: 10px; /* Align to the right side */
+    left: auto; /* Reset the default left alignment */
+
   }
 
   .close-button {
