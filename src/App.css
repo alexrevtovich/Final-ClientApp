@@ -74,12 +74,28 @@
 
 
 @media screen and (max-width: 600px) {
-  .navbar,
+  .navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    position: fixed; /* Fix navbar at the top */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Center navbar horizontally */
+    z-index: 2; /* Ensure navbar is above the map */
+  }
+  
   .nav-button {
-    width: 100%;
     padding: 10px;
+    margin: 1px;
+    min-width: 100px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #e0e0e0;
   }
 }
+
 
 .map-container {
   position: absolute;
@@ -133,8 +149,14 @@
   padding: 20px;
   margin: auto;
   max-width: 600px;
+  background-color: #f7fbfd; /* Light blue background */
 }
 
+.account-container h2 {
+  margin-top: 40px; /* Margin from the top for <h2> */
+}
+
+/* Include other styles for consistency */
 .account-info {
   margin: 10px 0;
 }
@@ -174,6 +196,7 @@
   text-align: center;
   color: #1148c0;
   margin-top: 10px;
+  font-size: 50px
 }
 
 .logo-text-small {
@@ -281,17 +304,18 @@
   }
 
   .search-container {
-    display: flex;
-    justify-content: flex-start; /* Align items to the start */
-    align-items: center;
-    top: 41px; /* Directly below the navbar, adjust if your navbar's height is different */
-    padding: 10px 10px; /* Adjust padding to match your design */
-    box-sizing: border-box;
-    background-color: #e9ecef;
-    width: 250px;
+    top: 50px; /* 50 pixels lower than its default position */
     position: fixed;
-    left: 0;
+    left: 130px; /* Center the container */
+    transform: translateX(-50%); /* Adjust horizontally to truly center */
+    width: 246px; 
     z-index: 100;
+    background-color: #e9ecef; /* Optional: background color for visibility */
+  }
+
+  .search-container input[type="text"] {
+    width: 196px; /* Set width for the input field */
+    /* Add any other styling as needed */
   }
 
   .station-info-container.hidden {
@@ -325,17 +349,22 @@
 @media screen and (max-width: 600px) {
 
   .search-container {
-    top: 60px; /* 60 pixels lower than its default position */
+    top: 50px; /* 50 pixels lower than its default position */
     position: fixed;
-    left: 0;
-
-    width: 100%; /* Ensure the container spans the full width */
-    padding: 1px 10px; /* Adjust padding as needed */
+    left: 130px; /* Center the container */
+    transform: translateX(-50%); /* Adjust horizontally to truly center */
+    width: 246px; 
     z-index: 100;
+    background-color: #e9ecef; /* Optional: background color for visibility */
+  }
+
+  .search-container input[type="text"] {
+    width: 196px; /* Set width for the input field */
+    /* Add any other styling as needed */
   }
 
   .toggle-station-info {
-    top: 63px; /* 60 pixels lower than its default position */
+    top: 52px; /* 60 pixels lower than its default position */
     right: 10px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
