@@ -28,6 +28,7 @@ const Map: React.FC = () => {
   const [myLocation, setMyLocation] = useState<[number, number]>([29.7174, -95.4028]);
   const [activeDetailPanel, setActiveDetailPanel] = useState<StationData | null>(null);
   const [currentRoute, setCurrentRoute] = useState<string | null>(null);
+  const [isStationInfoVisible, setIsStationInfoVisible] = useState(true); // State to track visibility
 
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
     setMyLocation((currentLocation) => {
@@ -210,38 +211,50 @@ const Map: React.FC = () => {
     }
   };
   
+  // Toggle function
+  const toggleStationInfoVisibility = () => {
+    setIsStationInfoVisible(!isStationInfoVisible);
+  };
   
 
   return (
     <>
+      {/* Toggle Button */}
+      <button onClick={toggleStationInfoVisibility} style={{ position: 'absolute', zIndex: 1050, left: '10px', top: '10px' }}>
+        {isStationInfoVisible ? 'Hide' : 'Show'}
+      </button>
+
       <div className="search-container">
-        <input 
+        <input
           type="text"
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Enter location"
           onKeyDown={handleKeyDown}
           aria-label="Location Input"
-          
         />
         <button onClick={handleSubmit}>Find</button>
       </div>
+
       <div ref={mapRef} className="map-container" />
       {error && <p className="error-message">{error}</p>}
-      <div className="station-info-container">
+
+      {isStationInfoVisible && (
+        <div className="station-info-container">
           {stationData.map((station, index) => (
-      <div key={index} className="station-info">
-        <p>Station Name: {station.station_name}</p>
-        <div>
-          <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
-          {station.averageRating > 0 && <StarRating rating={station.averageRating} />}
+            <div key={index} className="station-info">
+              <p>Station Name: {station.station_name}</p>
+              <div>
+                <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
+                {station.averageRating > 0 && <StarRating rating={station.averageRating} />}
+              </div>
+              <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
+              <p>Distance: {station.distance?.toFixed(2)} miles</p>
+              <button onClick={() => handleDetailsClick(station)}>Details</button>
+            </div>
+          ))}
         </div>
-        <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
-        <p>Distance: {station.distance?.toFixed(2)} miles</p>
-        <button onClick={() => handleDetailsClick(station)}>Details</button>
-      </div>
-    ))}
-      </div>
+      )}
 
       {activeDetailPanel && (
       <div className="detail-panel">

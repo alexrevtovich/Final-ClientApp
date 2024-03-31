@@ -41,23 +41,25 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  padding: 0px;
   background-color: #f0f0f0;
+  position: fixed; /* Fix navbar at the top */
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%); /* Center navbar horizontally */
+  z-index: 2; /* Ensure navbar is above the map */
 }
 
 .nav-button {
   padding: 10px;
   margin: 1px;
-  width: 15%;
-  max-width: 20%;
-  flex: 0 1 auto;
+  min-width: 100px;
   cursor: pointer;
   text-align: center;
+  background-color: #e0e0e0;
 }
 
 .nav-button:hover {
-  background-color: #e0e0e0;
+  background-color: #d0d0d0;
 }
 
 @media screen and (max-width: 600px) {
@@ -69,8 +71,12 @@
 }
 
 .map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 70vh;
+  height: 100vh;
+  z-index: 1; /* Place map behind the navbar */
 }
 
 .station-info {
@@ -221,9 +227,9 @@
 
 @media screen and (min-width: 601px) {
   .map-container {
-    width: calc(100% - 250px);
-    height: calc(100vh - 64px);
-    padding-top: 64px;
+    width: 100%;
+    height: 100vh;
+    
     float: right;
     box-sizing: border-box;
   }
@@ -241,6 +247,11 @@
     left: 0;
     z-index: 100;
   }
+
+  .station-info-container.hidden {
+    display: none;
+  }
+  
 
   .station-info-container,
   .detail-panel {
