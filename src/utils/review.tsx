@@ -92,7 +92,7 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
 
   return (
     <>
-      <button onClick={toggleModal}>Reviews</button>
+      <button className="base-button" onClick={toggleModal}>Reviews</button>
       {showModal && (
         <div className="modal">
           <button className="close-modal" onClick={toggleModal}>X</button>
@@ -119,7 +119,7 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
               placeholder="Write your review here..."
               className="review-textarea"
             />
-            <button type="submit" className="submit-review">Submit</button>
+            <button type="submit" className="base-button">Submit</button>
           </form>
           {reviewMessage && <div className="review-message">{reviewMessage}</div>}
           <div className="reviews-list">

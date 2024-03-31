@@ -41,18 +41,28 @@ body {
     transform: rotate(360deg);
   }
 }
+.base-button {
+  background-color: transparent;
+  color: #004080; /* Dark blue text color */
+  border: 1px solid #004080; /* Dark blue border */
+  padding: 10px;
+  margin: 1px;
+  min-width: 100px;
+  cursor: pointer;
+  text-align: center;
+}
 
 .navbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f0f0;
+  background-color: transparant;
   position: fixed; /* Fix navbar at the top */
   top: 0;
   left: 50%;
   transform: translateX(-50%); /* Center navbar horizontally */
   z-index: 2; /* Ensure navbar is above the map */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+
 }
 
 .nav-button {
@@ -61,7 +71,11 @@ body {
   min-width: 100px;
   cursor: pointer;
   text-align: center;
-  background-color: #e0e0e0;
+  /*background-color: transparent;*/
+  background-color: rgba(255, 255, 255, 0.92); /* 10% transparent white background */
+  color: #004080; /* Text color changed to dark blue */
+  border: 1px solid #004080; /* Perimeter line (border) color changed to dark blue */
+  border-radius: 8px; /* Rounded corners */
 }
 
 .nav-button:hover {
@@ -84,7 +98,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: transparant;
     position: fixed; /* Fix navbar at the top */
     top: 0;
     left: 50%;
@@ -98,7 +112,10 @@ body {
     min-width: 100px;
     cursor: pointer;
     text-align: center;
-    background-color: #e0e0e0;
+    background-color: rgba(255, 255, 255, 0.92); /* 10% transparent white background */
+    color: #004080; /* Text color changed to dark blue */
+    border: 1px solid #004080; /* Perimeter line (border) color changed to dark blue */
+    border-radius: 8px; /* Rounded corners */
   }
 }
 
@@ -118,7 +135,7 @@ body {
   margin-bottom: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  background-color: #f9f9f9;
+  background-color: #f7fbfd; /* Light blue background */
   width: calc(100% - 30px);
 }
 
@@ -126,16 +143,6 @@ body {
   margin: 5px 0;
 }
 
-.detail-panel-close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-size: 24px;
-  color: #707070;
-}
 
 .detail-panel-header {
   display: flex;
@@ -227,7 +234,7 @@ body {
   margin-bottom: 30px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  background-color: #f9f9f9;
+  background-color: white;
   width: calc(100% - 30px);
   resize: vertical;
   display: block;
@@ -250,7 +257,7 @@ body {
   top: 10%; /* Start 10% from the top */
   left: 50%;
   transform: translateX(-50%); /* Center horizontally */
-  background-color: white;
+  background-color: #f7fbfd; /* Light blue background */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -293,6 +300,9 @@ body {
 }
 
 .toggle-station-info {
+  background-color: whitesmoke;
+  color: #004080; /* Dark blue text color */
+  border: 1px solid #004080; /* Dark blue border */
   position: absolute;
   z-index: 1050;
   left: 10px;
@@ -340,15 +350,26 @@ body {
     position: fixed;
     left: 0;
     top: 82px; /* Start below the navbar and search container */
-    background-color: #f9f9f9;
+    background-color: rgba(255, 255, 255, 0.9); /* 10% transparent white background */
     z-index: 100;
   }
+  
 
   .detail-panel {
-    background-color: #e9ecef;
+    background-color: #f7fbfd; /* Light blue background */
     z-index: 102;
     box-shadow: 2px 0 8px rgba(0,0,0,0.2);
     padding: 0px;
+  }
+
+  .close-button {
+
+
+    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+    background-color: transparant; /* Optional: Set a background color */
+    border: 1px solid #004080; /* Dark blue border */
+    color: #1148c0; /* Optional: Set text color */
+
   }
 }
 
@@ -379,6 +400,7 @@ body {
   }
 
   .close-button {
+    
     height: 30px; /* Setting the height */
     padding: 0 10px; /* Adjust padding as needed */
     position: absolute;
@@ -396,7 +418,7 @@ body {
   .station-info-container {
     display: block;
     width: 100%;
-    background-color: #f9f9f9;
+    background-color: rgba(255, 255, 255, 0.9); /* 10% transparent white background */
     position: fixed; /* Ensure it's fixed for overlay positioning */
     left: 0;
     top: 50%;
@@ -408,7 +430,7 @@ body {
   .detail-panel {
     display: block;
     width: 100%;
-    background-color: #e9ecef; /* Differentiate the second panel */
+    background-color: #f7fbfd; /* Light blue background */
     position: fixed; /* Fixed position to overlay on top of the first panel */
     left: 0;
     top: 50%;

@@ -258,7 +258,7 @@ const Map: React.FC = () => {
               </div>
               <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
               <p>Distance: {station.distance?.toFixed(2)} miles</p>
-              <button onClick={() => handleDetailsClick(station)}>Details</button>
+              <button className="base-button" onClick={() => handleDetailsClick(station)}>Details</button>
             </div>
           ))}
         </div>
@@ -282,13 +282,13 @@ const Map: React.FC = () => {
         <p>DC Fast Chargers: {activeDetailPanel.ev_dc_fast_num !== null ? activeDetailPanel.ev_dc_fast_num : "None"}</p>
         <p>Level 2 EVSE: {activeDetailPanel.ev_level2_evse_num !== null ? activeDetailPanel.ev_level2_evse_num : "None"}</p>
         <p>Pricing: {activeDetailPanel.ev_pricing}</p>
-        <button onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Direction</button>
+        <button className="base-button" onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Direction</button>
         
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
         
-        <button onClick={handleChargeHereClick}>Charge Here</button> {/* New "Charge Here" button */}
+        <button className="base-button" onClick={handleChargeHereClick}>Charge Here</button> {/* New "Charge Here" button */}
         <hr /> {/* Separation line */}
-        <button onClick={handleTripClick}>Show stations along the route</button>
+        <button className="base-button" onClick={handleTripClick}>Show stations along the route</button>
 
 
       </div>

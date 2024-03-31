@@ -136,7 +136,7 @@ const Account: React.FC = () => {
         
       </div>
       
-      <button onClick={toggleCarsList}>{showCarsList ? 'Hide' : 'Show'} My Garage</button>
+      <button className="base-button" onClick={toggleCarsList}>{showCarsList ? 'Hide' : 'Show'} My Garage</button>
       {showCarsList && (
         <div className="cars-list">
           <ul>
@@ -155,7 +155,7 @@ const Account: React.FC = () => {
 
 
           </ul>
-          <button onClick={toggleModal}>Add Car</button>
+          <button className="base-button" onClick={toggleModal}>Add Car</button>
         </div>
       )}
       {showModal && (
