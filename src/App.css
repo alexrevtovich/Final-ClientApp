@@ -219,33 +219,50 @@
   color: rgb(114, 25, 25);
 }
 
-/* Wide screen styles for the first and second side panels */
 @media screen and (min-width: 601px) {
   .map-container {
     width: calc(100% - 250px);
-    height: 100vh;
+    height: calc(100vh - 64px);
+    padding-top: 64px;
     float: right;
+    box-sizing: border-box;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: flex-start; /* Align items to the start */
+    align-items: center;
+    top: 41px; /* Directly below the navbar, adjust if your navbar's height is different */
+    padding: 10px 20px; /* Adjust padding to match your design */
+    box-sizing: border-box;
+    background-color: #e9ecef;
+    width: 250px;
+    position: fixed;
+    left: 0;
+    z-index: 100;
   }
 
   .station-info-container,
   .detail-panel {
     width: 250px;
-    height: 100vh;
+    height: calc(100vh - 82px); /* Adjust based on the combined height of navbar and search container */
     overflow-y: auto;
     position: fixed;
     left: 0;
-    top: 22;
+    top: 82px; /* Start below the navbar and search container */
     background-color: #f9f9f9;
-    z-index: 100; /* Ensure the first panel is below the second */
+    z-index: 100;
   }
 
   .detail-panel {
-    background-color: #e9ecef; /* Differentiate the second panel */
-    z-index: 102; /* Ensure it covers the first panel */
+    background-color: #e9ecef;
+    z-index: 102;
     box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-    padding: 20px;
+    padding: 0px;
   }
 }
+
+
 
 @media screen and (max-width: 600px) {
   .station-info-container {

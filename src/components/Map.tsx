@@ -214,14 +214,15 @@ const Map: React.FC = () => {
 
   return (
     <>
-      <div>
-        <input
+      <div className="search-container">
+        <input 
           type="text"
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Enter location"
           onKeyDown={handleKeyDown}
           aria-label="Location Input"
+          
         />
         <button onClick={handleSubmit}>Find</button>
       </div>
@@ -245,6 +246,7 @@ const Map: React.FC = () => {
       {activeDetailPanel && (
       <div className="detail-panel">
         <h3>{activeDetailPanel.station_name}</h3>
+        <hr /> {/* Separation line */}
         <div>
           <p>Rating: {activeDetailPanel.averageRating === 0 ? "This station hasn't been rated yet" : activeDetailPanel.averageRating}</p>
           {activeDetailPanel.averageRating > 0 && <StarRating rating={activeDetailPanel.averageRating} />}
@@ -254,11 +256,13 @@ const Map: React.FC = () => {
         <p>DC Fast Chargers: {activeDetailPanel.ev_dc_fast_num !== null ? activeDetailPanel.ev_dc_fast_num : "None"}</p>
         <p>Level 2 EVSE: {activeDetailPanel.ev_level2_evse_num !== null ? activeDetailPanel.ev_level2_evse_num : "None"}</p>
         <p>Pricing: {activeDetailPanel.ev_pricing}</p>
-        <button onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Select</button>
+        <button onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Direction</button>
+        
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
         <button onClick={() => setActiveDetailPanel(null)}>Close</button>
         <button onClick={handleChargeHereClick}>Charge Here</button> {/* New "Charge Here" button */}
-        <button onClick={handleTripClick}>Trip</button>
+        <hr /> {/* Separation line */}
+        <button onClick={handleTripClick}>Show stations along the route</button>
 
 
       </div>
