@@ -151,7 +151,9 @@ const Account: React.FC = () => {
   };
   
   const handleUpdateUsername = async () => {
-      const payload = { email: userEmail, newUsername };
+      // Check if newUsername is empty, if so, use 'Good citizen' as the username
+      const finalUsername = newUsername.trim() === '' ? 'Good citizen' : newUsername;
+      const payload = { email: userEmail, newUsername: finalUsername };
       try {
         const response = await fetch('https://s24-final-back.azurewebsites.net/api/updateusername', {
           method: 'POST',
