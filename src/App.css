@@ -11,6 +11,27 @@ body {
   background-color: #f0f2f5; /* background color */
 }
 
+/* custom icons */
+.edit-icon {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.edit-icon:hover {
+  opacity: 0.8;
+}
+
+.icon-button {
+  cursor: pointer;
+  margin: 0 10px;
+  font-size: 20px; /* Adjust the size as needed */
+}
+
+/* Add :hover styles for better user interaction feedback */
+.icon-button:hover {
+  opacity: 0.8;
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
