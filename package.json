@@ -5,9 +5,9 @@
   "dependencies": {
     "@azure/identity": "^4.0.1",
     "@azure/keyvault-secrets": "^4.8.0",
-    "@fortawesome/fontawesome-svg-core": "^6.5.1",
-    "@fortawesome/free-regular-svg-icons": "^6.5.1",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@microsoft/signalr": "^8.0.0",
     "@testing-library/jest-dom": "^5.17.0",

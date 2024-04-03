@@ -11,6 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons'; // Solid star for the main car
+import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons'; // Regular star for other cars
+
 
 
 
@@ -175,6 +178,30 @@ const Account: React.FC = () => {
       }
     }
   };
+
+  const setMainCar = async (email: string, mainCarId: string): Promise<void> => {
+    // Function implementation here
+    // Example:
+    try {
+        const response = await fetch('http://localhost:7071/api/SetMainCar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, mainCarId }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        // Handle response data
+        console.log('Main car set successfully');
+    } catch (error) {
+        console.error('Error setting main car:', error);
+    }
+};
+
+  
     
     
   
@@ -200,15 +227,25 @@ const Account: React.FC = () => {
         <div className="cars-list">
           <ul>
           {carsInfo.map((car, index) => (
-            <li key={index}>
-              {`${car.brand} ${car.model} (${car.releaseYear})`}
-              <button 
-                onClick={() => handleDeleteCar(car.uniqueId)} 
-                className="delete-btn">
-                <FontAwesomeIcon icon={faTrashAlt} className="delete-icon"/>
-              </button>
-            </li>
-          ))}
+          <li key={index}>
+            <FontAwesomeIcon
+              icon={userInfo.mainCar === car.uniqueId ? solidStar : regularStar}
+              style={{ color: userInfo.mainCar === car.uniqueId ? 'blue' : 'blue', cursor: 'pointer' }}
+              onClick={() => setMainCar(userInfo.email, car.uniqueId)}
+            />
+            {` ${car.brand} ${car.model} (${car.releaseYear})`}
+            {/* Correctly use the FontAwesomeIcon for the delete button */}
+            <FontAwesomeIcon
+              icon={faTrashAlt}
+              className="delete-icon"
+              style={{ marginLeft: '10px', cursor: 'pointer' }} // Add some margin and cursor styling
+              onClick={() => handleDeleteCar(car.uniqueId)}
+            />
+          </li>
+        ))}
+
+
+
           </ul>
           <button className="base-button" onClick={toggleModal}>Add Car</button>
         </div>
