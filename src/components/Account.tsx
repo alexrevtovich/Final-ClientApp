@@ -42,7 +42,7 @@ const Account: React.FC = () => {
   const [showError, setShowError] = useState(false);
 
 
-  // Example usage within a React component or effect
+  // SignalR within a React component or effect
   useEffect(() => {
     const connection = new HubConnectionBuilder()
         .withUrl("https://s24-final-back.azurewebsites.net/api")
@@ -53,6 +53,19 @@ const Account: React.FC = () => {
       // Assuming the updated username is sent in the data object
       setUserInfo((prev) => ({ ...prev, username: data.Username }));
     });
+
+    // Listen for mainCarUpdated messages
+    connection.on("mainCarUpdated", async (data) => {
+      // Check if the update is relevant to the current user
+      if (data.Email === userEmail) {
+          try {
+              const mainCarInfo = await fetchCarInfo(data.MainCarId);
+              setCarInfo(mainCarInfo);
+          } catch (error) {
+              console.error('Error fetching updated main car info:', error);
+          }
+      }
+  });
   
     connection.start()
         .then(() => console.log("Connected to SignalR hub"))
@@ -183,7 +196,7 @@ const Account: React.FC = () => {
     // Function implementation here
     // Example:
     try {
-        const response = await fetch('http://localhost:7071/api/SetMainCar', {
+        const response = await fetch('https://s24-final-back.azurewebsites.net/api/SetMainCar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -230,15 +243,15 @@ const Account: React.FC = () => {
           <li key={index}>
             <FontAwesomeIcon
               icon={userInfo.mainCar === car.uniqueId ? solidStar : regularStar}
-              style={{ color: userInfo.mainCar === car.uniqueId ? 'blue' : 'blue', cursor: 'pointer' }}
+              style={{ color: userInfo.mainCar === car.uniqueId ? '#3c77bb' : '#3c77bb', cursor: 'pointer' }}
               onClick={() => setMainCar(userInfo.email, car.uniqueId)}
             />
             {` ${car.brand} ${car.model} (${car.releaseYear})`}
-            {/* Correctly use the FontAwesomeIcon for the delete button */}
+            
             <FontAwesomeIcon
               icon={faTrashAlt}
               className="delete-icon"
-              style={{ marginLeft: '10px', cursor: 'pointer' }} // Add some margin and cursor styling
+              style={{ marginLeft: '10px', cursor: 'pointer' }} 
               onClick={() => handleDeleteCar(car.uniqueId)}
             />
           </li>
