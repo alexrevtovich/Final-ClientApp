@@ -39,7 +39,7 @@ const Account: React.FC = () => {
   const [showCarsList, setShowCarsList] = useState(false);
   const [showUpdateNameModal, setShowUpdateNameModal] = useState(false);
   const [newUsername, setNewUsername] = useState('');
-  const [showError, setShowError] = useState(false);
+
 
 
   // SignalR within a React component or effect
@@ -74,7 +74,7 @@ const Account: React.FC = () => {
     return () => {
       connection.stop();
     };
-  }, []); // Ensure this setup is correct
+  }, [userEmail]); // Ensure this setup is correct
   
 
   useEffect(() => {
@@ -169,10 +169,9 @@ const Account: React.FC = () => {
   
   const handleUpdateUsername = async () => {
     if (!newUsername.trim()) {
-      // If newUsername is empty, show the error and don't submit
-      setShowError(true);
+      console.error('New username cannot be empty.');
+      // If you have an alternative error feedback mechanism, invoke it here
     } else {
-      // Proceed with the username update if newUsername is not empty
       const payload = { email: userEmail, newUsername: newUsername.trim() };
       try {
         const response = await fetch('https://s24-final-back.azurewebsites.net/api/updateusername', {
@@ -183,14 +182,14 @@ const Account: React.FC = () => {
         if (!response.ok) throw new Error('Failed to update username');
         // Close the modal on successful update
         setShowUpdateNameModal(false);
-        // Reset showError and newUsername for next use
-        setShowError(false);
-        setNewUsername('');
+        setNewUsername(''); // Reset newUsername for next use
       } catch (error) {
         console.error('Error updating username:', error);
+        // If you have an alternative error feedback mechanism, invoke it here
       }
     }
   };
+  
 
   const setMainCar = async (email: string, mainCarId: string): Promise<void> => {
     // Function implementation here
