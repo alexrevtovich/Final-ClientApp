@@ -192,8 +192,6 @@ const Account: React.FC = () => {
   
 
   const setMainCar = async (email: string, mainCarId: string): Promise<void> => {
-    // Function implementation here
-    // Example:
     try {
         const response = await fetch('https://s24-final-back.azurewebsites.net/api/SetMainCar', {
             method: 'POST',
@@ -206,12 +204,23 @@ const Account: React.FC = () => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        // Handle response data
+        
+        // Assume success and optimistically update the local state to reflect the new main car
+        setUserInfo(prevUserInfo => ({
+            ...prevUserInfo,
+            mainCar: mainCarId,
+        }));
+
+        // Optionally, if carInfo is displayed elsewhere and needs to be updated
+        const updatedMainCarInfo = await fetchCarInfo(mainCarId);
+        setCarInfo(updatedMainCarInfo);
+
         console.log('Main car set successfully');
     } catch (error) {
         console.error('Error setting main car:', error);
     }
 };
+
 
   
     
@@ -240,21 +249,22 @@ const Account: React.FC = () => {
           <ul>
           {carsInfo.map((car, index) => (
           <li key={index}>
-            <FontAwesomeIcon
-              icon={userInfo.mainCar === car.uniqueId ? solidStar : regularStar}
-              style={{ color: userInfo.mainCar === car.uniqueId ? '#3c77bb' : '#3c77bb', cursor: 'pointer' }}
-              onClick={() => setMainCar(userInfo.email, car.uniqueId)}
-            />
-            {` ${car.brand} ${car.model} (${car.releaseYear})`}
-            
-            <FontAwesomeIcon
-              icon={faTrashAlt}
-              className="delete-icon"
-              style={{ marginLeft: '10px', cursor: 'pointer' }} 
-              onClick={() => handleDeleteCar(car.uniqueId)}
-            />
+              <FontAwesomeIcon
+                  icon={userInfo.mainCar === car.uniqueId ? solidStar : regularStar}
+                  style={{ color: userInfo.mainCar === car.uniqueId ? '3c77bb' : '3c77bb', cursor: 'pointer' }}
+                  onClick={() => setMainCar(userInfo.email, car.uniqueId)}
+              />
+              {` ${car.brand} ${car.model} (${car.releaseYear})`}
+              
+              <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  className="delete-icon"
+                  style={{ marginLeft: '10px', cursor: 'pointer' }} 
+                  onClick={() => handleDeleteCar(car.uniqueId)}
+              />
           </li>
-        ))}
+      ))}
+
 
 
 
