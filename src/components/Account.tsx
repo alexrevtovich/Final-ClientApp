@@ -36,6 +36,7 @@ const Account: React.FC = () => {
   const [showCarsList, setShowCarsList] = useState(false);
   const [showUpdateNameModal, setShowUpdateNameModal] = useState(false);
   const [newUsername, setNewUsername] = useState('');
+  const [showError, setShowError] = useState(false);
 
 
   // Example usage within a React component or effect
@@ -151,9 +152,12 @@ const Account: React.FC = () => {
   };
   
   const handleUpdateUsername = async () => {
-      // Check if newUsername is empty, if so, use 'Good citizen' as the username
-      const finalUsername = newUsername.trim() === '' ? 'Good citizen' : newUsername;
-      const payload = { email: userEmail, newUsername: finalUsername };
+    if (!newUsername.trim()) {
+      // If newUsername is empty, show the error and don't submit
+      setShowError(true);
+    } else {
+      // Proceed with the username update if newUsername is not empty
+      const payload = { email: userEmail, newUsername: newUsername.trim() };
       try {
         const response = await fetch('https://s24-final-back.azurewebsites.net/api/updateusername', {
           method: 'POST',
@@ -161,13 +165,16 @@ const Account: React.FC = () => {
           body: JSON.stringify(payload),
         });
         if (!response.ok) throw new Error('Failed to update username');
-        // Close the modal
+        // Close the modal on successful update
         setShowUpdateNameModal(false);
-        // Optionally, fetch updated account info here or rely on SignalR to update the UI
+        // Reset showError and newUsername for next use
+        setShowError(false);
+        setNewUsername('');
       } catch (error) {
         console.error('Error updating username:', error);
       }
-    };
+    }
+  };
     
     
   
