@@ -8,12 +8,13 @@ import { StationData } from '../utils/stations';
 import reverseGeocode from '../utils/reverse';
 import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 import getMyLocation from '../utils/mylocation';
-import Review from '../utils/review'; 
+import Review from '../utils/review';
 import StarRating from '../utils/starRating';
-import chargeCar from '../utils/chargeCar'; 
+// import chargeCar from '../utils/chargeCar';
 import { fetchStationsAlongRoute } from '../utils/trip';
 import axios from 'axios';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+
 
 
 
