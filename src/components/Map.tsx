@@ -12,8 +12,8 @@ import Review from '../utils/review';
 import StarRating from '../utils/starRating';
 import chargeCar from '../utils/chargeCar'; 
 import { fetchStationsAlongRoute } from '../utils/trip';
-
-
+import axios from 'axios';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 
 
@@ -30,6 +30,7 @@ const Map: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<string | null>(null);
   const [isStationInfoVisible, setIsStationInfoVisible] = useState(true); // State to track visibility
   const [isDetailPanelVisible, setIsDetailPanelVisible] = useState(true); // State to track visibility
+  const [chargingDetails, setChargingDetails] = useState<{ AC: number; DC: number } | null>(null);
 
 
   const toggleVisibility = () => {
@@ -62,24 +63,75 @@ const Map: React.FC = () => {
   const fetchAndDisplayStations = useCallback(async (location: string) => {
     setError(null);
     try {
-      const stationsData = await fetchStations(location);
-      setStationData(stationsData);
+        const stationsData = await fetchStations(location);
+        const stationsWithChargingInfo = await Promise.all(stationsData.map(async (station) => {
+            try {
+                // Fetch sum of AC and DC values for the station
+                const sumResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/SumCharging', { StationId: station.id });
+                station.AC = sumResponse.data.ac || 0; // Adjust to match the response structure
+                station.DC = sumResponse.data.dc || 0;
+                station.chargingCount = sumResponse.data.chargingCount || 0; // Assuming you have chargingCount in the response, otherwise remove
+            } catch (error) {
+                console.error(`Failed to fetch charging info for stationId ${station.id}:`, error);
+                station.AC = 0; // Set default value if fetching fails
+                station.DC = 0; // Set default value if fetching fails
+                station.chargingCount = 0; // Assuming chargingCount is needed, otherwise remove
+            }
+            return station;
+        }));
+        setStationData(stationsWithChargingInfo);
+        // Display stations on the map
+        if (stationsWithChargingInfo.length > 0 && mapInstanceRef.current) {
+            mapInstanceRef.current.setCamera({
+                center: [stationsWithChargingInfo[0].longitude, stationsWithChargingInfo[0].latitude],
+                zoom: 15,
+            });
 
-      if (stationsData.length > 0 && mapInstanceRef.current) {
-        mapInstanceRef.current.setCamera({
-          center: [stationsData[0].longitude, stationsData[0].latitude],
-          zoom: 15,
-        });
-
-        addPinsToMap(stationsData, mapInstanceRef.current, setActiveDetailPanel);
-      } else {
-        setError('No stations found for the provided location.');
-      }
+            addPinsToMap(stationsWithChargingInfo, mapInstanceRef.current, setActiveDetailPanel);
+        } else {
+            setError('No stations found for the provided location.');
+        }
     } catch (error) {
-      console.error('Error fetching stations:', error);
-      setError('Failed to fetch station data. Please try again.');
+        console.error('Error fetching stations:', error);
+        setError('Failed to fetch station data. Please try again.');
     }
-  }, []);
+}, []);
+
+//SignalR
+useEffect(() => {
+  const connection = new HubConnectionBuilder()
+    .withUrl("https://s24-final-back.azurewebsites.net/api", {
+        // If you're using Azure Function authentication, configure it here
+    })
+    .configureLogging(LogLevel.Information)
+    .withAutomaticReconnect()
+    .build();
+
+  connection.on("chargingUpdate", (data) => {
+    console.log("Charging data updated:", data);
+    // Implement the logic to update the station data in your state
+    // For example, if 'data' contains the updated station info:
+    const updatedStations = stationData.map(station => {
+      if (station.id === data.StationId) {
+        return { ...station, AC: data.AC, DC: data.DC };
+      }
+      return station;
+    });
+    setStationData(updatedStations);
+  });
+
+  connection.start()
+    .then(() => console.log("Connected to SignalR hub"))
+    .catch(err => console.error("SignalR Connection Error: ", err));
+
+  // Clean up on unmount
+  return () => {
+    connection.stop();
+  };
+}, [stationData]); // Make sure to include all dependencies needed inside this effect
+
+  
+  
 
   useEffect(() => {
     getMyLocation(updateMyLocation);
@@ -175,28 +227,84 @@ const Map: React.FC = () => {
     }
   };
 
-  const handleDetailsClick = (station: StationData) => {
-    setActiveDetailPanel(station);
+  const handleDetailsClick = async (station: StationData) => {
+    try {
+      // Corrected to use POST request to the /api/SumCharging endpoint
+      const sumResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/sumcharging', {
+        StationId: station.id,
+      });
+      // Assuming the response structure has 'ac', 'dc', and optionally 'chargingCount'
+      const { ac, dc } = sumResponse.data;
+      station.AC = ac || 0; // Adjust to match the response structure
+      station.DC = dc || 0;
+      setActiveDetailPanel(station);
+      setChargingDetails({ AC: ac, DC: dc }); // Update state with the new AC and DC values
+    } catch (error) {
+      console.error(`Failed to fetch charging info for stationId ${station.id}:`, error);
+      // If fetching fails, consider how you want to handle this. For now, let's log and move on.
+      station.AC = 0; // Setting default values as a fallback
+      station.DC = 0;
+      setActiveDetailPanel(station); // You may decide to still set the active detail panel or handle differently
+    }
   };
+  
+  
+  
 
-  const handleChargeHereClick = () => {
+  const handleChargeHereClick = async () => {
     if (!activeDetailPanel) {
       console.error("No station selected.");
       return;
     }
   
-    // Prepare payload for charging
-    const payload = {
-      charge: 80, // Dummy charge value for now
-      usable_battery_size: 37.9, // Dummy usable_battery_size value for now
-      ACMaxPower: 11.0, // Dummy ACMaxPower value for now
-      DCCharger: true, // Assuming the car has DC charging capability
-      station_DC: activeDetailPanel.ev_dc_fast_num !== null ? true : false // Determine station_DC based on the presence of DC fast chargers
-    };
+    try {
+      const payload = {
+        StationId: activeDetailPanel.id,
+        Email: sessionStorage.getItem('userEmail') || 'fake_user',
+        AC: activeDetailPanel.DC !== null ? 0 : 1,
+        DC: activeDetailPanel.DC !== null ? 1 : 0
+      };
   
-    // Call the chargeCar function
-    chargeCar(payload);
+      const response = await axios.post('https://s24-final-back.azurewebsites.net/api/startcharging', payload);
+  
+      console.log('Charging request successful:', response.data);
+      // Display AC and DC values returned from the API
+      setChargingDetails({ AC: response.data.ac, DC: response.data.dc });
+    } catch (error) {
+      console.error('Error charging the car:', error);
+      // Handle error, e.g., display an error message to the user
+      alert('Failed to charge the car. Please try again later.');
+    }
   };
+  
+  
+
+  const handleStopChargingClick = async () => {
+    try {
+      if (!activeDetailPanel) {
+        console.error("No station selected.");
+        return;
+      }
+  
+      const payload = {
+        StationId: activeDetailPanel.id,
+        Email: sessionStorage.getItem('userEmail') || 'fake_user',
+      };
+  
+      const response = await axios.post('https://s24-final-back.azurewebsites.net/api/StopCharging', payload);
+  
+      console.log('Stop charging request successful:', response.data);
+  
+      // Display AC and DC values returned from the API
+      setChargingDetails({ AC: response.data.ac, DC: response.data.dc });
+    } catch (error) {
+      console.error('Error stopping charging:', error);
+      // Handle error, e.g., display an error message to the user
+      alert('Failed to stop charging. Please try again later.');
+    }
+  };
+  
+
 
   const handleTripClick = async () => {
     if (!currentRoute) {
@@ -252,21 +360,23 @@ const Map: React.FC = () => {
       {error && <p className="error-message">{error}</p>}
 
       {isStationInfoVisible && (
-        <div className="station-info-container">
-          {stationData.map((station, index) => (
-            <div key={index} className="station-info">
-              <p>Station Name: {station.station_name}</p>
-              <div>
-                <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
-                {station.averageRating > 0 && <StarRating rating={station.averageRating} />}
-              </div>
-              <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
-              <p>Distance: {station.distance?.toFixed(2)} miles</p>
-              <button className="base-button" onClick={() => handleDetailsClick(station)}>Details</button>
+      <div className="station-info-container">
+        {stationData.map((station, index) => (
+          <div key={index} className="station-info">
+            <p>Station Name: {station.station_name}</p>
+            <p>Charging Count: {station.chargingCount}</p> {/* New: Display charging count */}
+            <div>
+              <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
+              {station.averageRating > 0 && <StarRating rating={station.averageRating} />}
             </div>
-          ))}
-        </div>
-      )}
+            <p>Connector Types: {station.ev_connector_types?.join(', ')}</p>
+            <p>Distance: {station.distance?.toFixed(2)} miles</p>
+            <button className="base-button" onClick={() => handleDetailsClick(station)}>Details</button>
+          </div>
+        ))}
+      </div>
+    )}
+
 
       {isDetailPanelVisible && activeDetailPanel && (
       <div className="detail-panel">
@@ -286,11 +396,21 @@ const Map: React.FC = () => {
         <p>DC Fast Chargers: {activeDetailPanel.ev_dc_fast_num !== null ? activeDetailPanel.ev_dc_fast_num : "None"}</p>
         <p>Level 2 EVSE: {activeDetailPanel.ev_level2_evse_num !== null ? activeDetailPanel.ev_level2_evse_num : "None"}</p>
         <p>Pricing: {activeDetailPanel.ev_pricing}</p>
+        <p>AC: {activeDetailPanel.AC}</p> {/* Display AC value */}
+        <p>DC: {activeDetailPanel.DC}</p> {/* Display DC value */}
         <button className="base-button" onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Direction</button>
-        
+
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
         
-        <button className="base-button" onClick={handleChargeHereClick}>Charge Here</button> {/* New "Charge Here" button */}
+        <button className="base-button" onClick={handleChargeHereClick}>Charge Here</button>
+        <button className="base-button" onClick={handleStopChargingClick}>Stop Charging</button> {/* New "Stop Charging" button */}
+        {/* Display AC and DC values */}
+        {chargingDetails && (
+          <div>
+            <p>AC: {chargingDetails.AC}</p>
+            <p>DC: {chargingDetails.DC}</p>
+          </div>
+        )}
         <hr /> {/* Separation line */}
         <button className="base-button" onClick={handleTripClick}>Show stations along the route</button>
 
