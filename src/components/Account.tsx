@@ -182,7 +182,7 @@ const Account: React.FC = () => {
     } else {
       const payload = { email: userEmail, newUsername: newUsername.trim() };
       try {
-        const response = await fetch('http://localhost:7071/api/updateusername', {
+        const response = await fetch('https://s24-final-back.azurewebsites.net/api/updateusername', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
