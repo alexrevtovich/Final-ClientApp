@@ -31,7 +31,7 @@ const Map: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<string | null>(null);
   const [isStationInfoVisible, setIsStationInfoVisible] = useState(true); // State to track visibility
   const [isDetailPanelVisible, setIsDetailPanelVisible] = useState(true); // State to track visibility
-  //const [chargingDetails, setChargingDetails] = useState<{ AC: number; DC: number } | null>(null);
+
 
 
   const toggleVisibility = () => {
@@ -252,7 +252,7 @@ useEffect(() => {
       station.AC = ac || 0; // Adjust to match the response structure
       station.DC = dc || 0;
       setActiveDetailPanel(station);
-      
+     
     } catch (error) {
       console.error(`Failed to fetch charging info for stationId ${station.id}:`, error);
       // If fetching fails, consider how you want to handle this. For now, let's log and move on.
@@ -309,7 +309,6 @@ useEffect(() => {
   
       console.log('Stop charging request successful:', response.data);
   
-      // Display AC and DC values returned from the API
       
     } catch (error) {
       console.error('Error stopping charging:', error);
