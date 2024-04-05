@@ -100,36 +100,49 @@ const Map: React.FC = () => {
 
 //SignalR
 useEffect(() => {
+  // Establish the connection using HubConnectionBuilder
   const connection = new HubConnectionBuilder()
-    .withUrl("https://s24-final-back.azurewebsites.net/api", {
-        // If you're using Azure Function authentication, configure it here
+    .withUrl("https://s24-final-back.azurewebsites.net/api", { // Correct endpoint
+      // Add any required configuration options here
     })
     .configureLogging(LogLevel.Information)
     .withAutomaticReconnect()
-    .build();
+    .build(); // Correctly terminates the builder chain
 
-  connection.on("chargingUpdate", (data) => {
+  // Define the event handler for "chargingUpdate" events
+  const onChargingUpdate = (data: any) => {
     console.log("Charging data updated:", data);
-    // Implement the logic to update the station data in your state
-    // For example, if 'data' contains the updated station info:
-    const updatedStations = stationData.map(station => {
-      if (station.id === data.StationId) {
-        return { ...station, AC: data.AC, DC: data.DC };
-      }
-      return station;
-    });
-    setStationData(updatedStations);
-  });
 
+    // Update station data based on the incoming data
+    setStationData(currentStations => currentStations.map(station => {
+      if (station.id === data.StationId) {
+        return { ...station, AC: data.AC, DC: data.DC }; // Update with new AC/DC values
+      }
+      return station; // Return unchanged if not the updated station
+    }));
+
+    // Additionally, update activeDetailPanel if it's showing the updated station
+    if (activeDetailPanel && activeDetailPanel.id === data.StationId) {
+      setActiveDetailPanel(prevDetailPanel => prevDetailPanel ? { ...prevDetailPanel, AC: data.AC, DC: data.DC } : null);
+    }
+  };
+
+  // Attach the event handler to the "chargingUpdate" event
+  connection.on("chargingUpdate", onChargingUpdate);
+
+  // Start the SignalR connection
   connection.start()
     .then(() => console.log("Connected to SignalR hub"))
     .catch(err => console.error("SignalR Connection Error: ", err));
 
-  // Clean up on unmount
+  // Define the cleanup function to stop the connection and remove the event handler
   return () => {
     connection.stop();
+    connection.off("chargingUpdate", onChargingUpdate); // Remove the event handler
   };
-}, [stationData]); // Make sure to include all dependencies needed inside this effect
+}, [activeDetailPanel]); // Dependencies array
+
+
 
   
   
@@ -405,13 +418,7 @@ useEffect(() => {
         
         <button className="base-button" onClick={handleChargeHereClick}>Charge Here</button>
         <button className="base-button" onClick={handleStopChargingClick}>Stop Charging</button> {/* New "Stop Charging" button */}
-        {/* Display AC and DC values */}
-        {chargingDetails && (
-          <div>
-            <p>AC: {chargingDetails.AC}</p>
-            <p>DC: {chargingDetails.DC}</p>
-          </div>
-        )}
+        
         <hr /> {/* Separation line */}
         <button className="base-button" onClick={handleTripClick}>Show stations along the route</button>
 
