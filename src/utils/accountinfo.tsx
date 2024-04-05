@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const fetchAccountInfo = async (email: string) => {
   try {
-    const response = await axios.post('https://s24-final-back.azurewebsites.net/api/accountinfo', {
+    const response = await axios.post('http://localhost:7071/api/accountinfo', {
       email
     });
     return response.data;

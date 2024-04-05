@@ -30,7 +30,7 @@ interface CarDetail {
 const Account: React.FC = () => {
   const navigate = useNavigate();
   const userEmail = sessionStorage.getItem("userEmail");
-  const [userInfo, setUserInfo] = useState({ username: '', email: '', mainCar: '', cars: [] });
+  const [userInfo, setUserInfo] = useState({ username: '', email: '', mainCar: '', cars: [], isDC: false });
   const [carInfo, setCarInfo] = useState<CarDetail | null>(null);
   const [carsInfo, setCarsInfo] = useState<CarDetail[]>([]);
   const [myLocation, setMyLocation] = useState<[number, number]>([0, 0]);
@@ -49,10 +49,18 @@ const Account: React.FC = () => {
         .configureLogging(LogLevel.Information)
         .build();
   
+    // Listen for the usernameUpdated event and update the state accordingly
     connection.on("usernameUpdated", (data) => {
-      // Assuming the updated username is sent in the data object
-      setUserInfo((prev) => ({ ...prev, username: data.Username }));
+      console.log("Received username update:", data);
+      if (data.Email === userEmail) {
+        setUserInfo(prevUserInfo => ({
+          ...prevUserInfo,
+          username: data.Username // Correctly accessing the properties as sent by the backend
+        }));
+      }
     });
+    
+    
 
     // Listen for mainCarUpdated messages
     connection.on("mainCarUpdated", async (data) => {
@@ -68,9 +76,9 @@ const Account: React.FC = () => {
   });
   
     connection.start()
-        .then(() => console.log("Connected to SignalR hub"))
-        .catch(err => console.error("SignalR Connection Error: ", err));
-  
+    .then(() => console.log("Connected to SignalR hub"))
+    .catch(err => console.error("SignalR Connection Error: ", err));
+    
     return () => {
       connection.stop();
     };
@@ -174,7 +182,7 @@ const Account: React.FC = () => {
     } else {
       const payload = { email: userEmail, newUsername: newUsername.trim() };
       try {
-        const response = await fetch('https://s24-final-back.azurewebsites.net/api/updateusername', {
+        const response = await fetch('http://localhost:7071/api/updateusername', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
