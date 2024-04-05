@@ -409,8 +409,8 @@ useEffect(() => {
         <p>DC Fast Chargers: {activeDetailPanel.ev_dc_fast_num !== null ? activeDetailPanel.ev_dc_fast_num : "None"}</p>
         <p>Level 2 EVSE: {activeDetailPanel.ev_level2_evse_num !== null ? activeDetailPanel.ev_level2_evse_num : "None"}</p>
         <p>Pricing: {activeDetailPanel.ev_pricing}</p>
-        <p>AC: {activeDetailPanel.AC}</p> {/* Display AC value */}
-        <p>DC: {activeDetailPanel.DC}</p> {/* Display DC value */}
+        {/*<p>AC: {activeDetailPanel.AC}</p>  Display AC value */} 
+        <p>People here: {activeDetailPanel.DC}</p> {/* Display DC value */}
         <button className="base-button" onClick={() => handleStationSelect(activeDetailPanel, myLocation)}>Direction</button>
 
         <Review stationId={activeDetailPanel.id} userEmail={sessionStorage.getItem('userEmail') || 'fake_user'} />
