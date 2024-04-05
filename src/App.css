@@ -456,15 +456,15 @@ body {
   .detail-panel {
     display: block;
     width: 100%;
-    background-color: #f7fbfd; /* Light blue background */
-    position: fixed; /* Fixed position to overlay on top of the first panel */
-    left: 0;
-    top: 50%;
-    height: 100vh; /* Full viewport height */
-    overflow-y: auto; /* Allow vertical scroll */
-    z-index: 101; /* Higher z-index to overlay on top of the first panel */
-    box-shadow: 0 3px 5px rgba(0,0,0,0.2); /* Optional: Shadow for depth */
-    padding: 20px; /* Padding for content */
+    background-color: #f7fbfd;
+    position: fixed;
+    top: 50%; /* Start from the middle of the screen */
+    height: 50vh; /* Occupy the bottom half of the screen */
+    overflow-y: auto;
+    z-index: 101;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+    padding: 20px;
+    border-radius: 0;
   }
 }
 
