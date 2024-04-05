@@ -459,7 +459,7 @@ body {
     background-color: #f7fbfd;
     position: fixed;
     top: 50%; /* Start from the middle of the screen */
-    height: 50vh; /* Occupy the bottom half of the screen */
+    height: calc(50vh - 30px); /* Subtract an estimated navigation bar height */
     overflow-y: auto;
     z-index: 101;
     box-shadow: 0 3px 5px rgba(0,0,0,0.2);
