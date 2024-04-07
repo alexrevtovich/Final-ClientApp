@@ -11,7 +11,7 @@ interface RouteSegment {
 }
 
 export const getRouteDirections = async (startCoords: Coordinates, endCoords: Coordinates): Promise<RouteSegment> => {
-    const subscriptionKey = process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY || 'h72XWBttx4Tanjo1p5fNxyZPyzWi5UpgCL3yIe0K0Xs';
+    const subscriptionKey = process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY;
     const startQuery = encodeURIComponent(`${startCoords[0]},${startCoords[1]}`); 
     const endQuery = encodeURIComponent(`${endCoords[0]},${endCoords[1]}`); 
     const routeUrl = `https://atlas.microsoft.com/route/directions/json?api-version=1.0&subscription-key=${subscriptionKey}&query=${startQuery}:${endQuery}`;
