@@ -11,8 +11,7 @@ export const fetchStationsAlongRoute = async ({
   linestring,
   distance,
 }: FetchStationsAlongRouteParams): Promise<StationData[]> => {
-  const API_URL = `https://developer.nrel.gov/api/alt-fuel-stations/v1/nearby-route.json`;
-  const API_KEY = 'YRZ8wDuqPO3Ov5XeQhvKkaR6Zvw0afc7WlBNbdm6';
+  const FUNCTION_URL = `https://s24-final-back.azurewebsites.net/api/fetchstationsalongroute`;
 
   // Convert the LINESTRING into an array of points for simplification
   const points = linestring.slice(11, -1).split(', ').map(pair => {
@@ -27,10 +26,13 @@ export const fetchStationsAlongRoute = async ({
 
   // Convert back to LINESTRING format
   const simplifiedLinestring = `LINESTRING(${simplifiedPoints.map(p => `${p.x} ${p.y}`).join(", ")})`;
-  const routeQueryParam = encodeURIComponent(simplifiedLinestring);
 
   try {
-    const response = await axios.get(`${API_URL}?api_key=${API_KEY}&route=${routeQueryParam}&distance=${distance}`);
+    // Making POST request to your Azure Function
+    const response = await axios.post(FUNCTION_URL, {
+      linestring: simplifiedLinestring,
+      distance: distance.toString(),
+    });
 
     // Map the response to match the StationData type
     let stations: StationData[] = response.data.fuel_stations.map((station: any) => ({
@@ -42,7 +44,7 @@ export const fetchStationsAlongRoute = async ({
       street_address: station.street_address,
       ev_connector_types: station.ev_connector_types,
       distance: station.distance,
-      averageRating: 0, // Placeholder, assuming you'll fetch ratings similarly to how it's done in stations.tsx
+      averageRating: 0, // Assuming you will handle ratings separately
       ev_dc_fast_num: station.ev_dc_fast_num,
       ev_level2_evse_num: station.ev_level2_evse_num,
       ev_pricing: station.ev_pricing || "Not available",
