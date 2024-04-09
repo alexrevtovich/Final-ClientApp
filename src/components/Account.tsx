@@ -51,7 +51,7 @@ const Account: React.FC = () => {
   
     // Listen for the usernameUpdated event and update the state accordingly
     connection.on("usernameUpdated", (data) => {
-      console.log("Received username update:", data);
+      
       if (data.Email === userEmail) {
         setUserInfo(prevUserInfo => ({
           ...prevUserInfo,
@@ -121,7 +121,7 @@ const Account: React.FC = () => {
       const carsDetailsPromises = userInfo.cars.map(carId => fetchCarInfo(carId));
       try {
         const carsDetails = await Promise.all(carsDetailsPromises);
-        console.log(carsDetails);
+        
         setCarsInfo(carsDetails.filter(car => car !== null));
       } catch (error) {
         console.error('Error fetching cars details:', error);
@@ -223,7 +223,7 @@ const Account: React.FC = () => {
         const updatedMainCarInfo = await fetchCarInfo(mainCarId);
         setCarInfo(updatedMainCarInfo);
 
-        console.log('Main car set successfully');
+        
     } catch (error) {
         console.error('Error setting main car:', error);
     }

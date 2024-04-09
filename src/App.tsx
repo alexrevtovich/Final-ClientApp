@@ -8,9 +8,6 @@ import './App.css';
 
 const AppWithNavbar: React.FC = () => {
   const location = useLocation(); // Get the current location
-  console.log('Environment:', process.env.NODE_ENV);
-  console.log('Public URL:', process.env.PUBLIC_URL);
-
 
   return (
     <>
