@@ -22,11 +22,8 @@ export async function fetchStations(location: string): Promise<StationData[]> {
   const FUNCTION_URL = `https://s24-final-back.azurewebsites.net/api/fetchstations`;
 
   try {
-    // The axios post method is used to send the location in JSON format
     const response = await axios.post(FUNCTION_URL, { location });
-    
-    // Assuming the Azure Function returns the data in a similar structure to the NREL API
-    // and directly in the response body.
+
     let stations = response.data.fuel_stations.map((station: any) => ({
       id: station.id,
       station_name: station.station_name,
@@ -49,6 +46,16 @@ export async function fetchStations(location: string): Promise<StationData[]> {
     const enrichedStations = stations.map(async (station: any) => {
       // Additional logic for fetching ratings and AC/DC counts
       // Assume this logic remains the same, or adjust as necessary to match your backend
+      // Fetch average rating
+      try {
+        const ratingResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/getrating', {
+          stationId: station.id,
+        });
+        station.averageRating = ratingResponse.data.averageRating;
+      } catch (error) {
+        console.error(`Failed to fetch average rating for stationId ${station.id}:`, error);
+        // Optionally handle this error, e.g., by leaving the default rating or setting a specific error value
+      }
 
       return station; // This is the station data enriched with the additional details
     });
