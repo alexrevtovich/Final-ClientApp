@@ -10,35 +10,45 @@ interface RouteSegment {
     points: { latitude: number; longitude: number }[];
 }
 
+// Update to fix TypeScript implicit any error
 export const getRouteDirections = async (startCoords: Coordinates, endCoords: Coordinates): Promise<RouteSegment> => {
-    const subscriptionKey = process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY;
-    const startQuery = encodeURIComponent(`${startCoords[0]},${startCoords[1]}`); 
-    const endQuery = encodeURIComponent(`${endCoords[0]},${endCoords[1]}`); 
-    const routeUrl = `https://atlas.microsoft.com/route/directions/json?api-version=1.0&subscription-key=${subscriptionKey}&query=${startQuery}:${endQuery}`;
-    console.log(`Requesting route for ${startQuery} to ${endQuery}`);
+    const response = await fetch('https://s24-final-back.azurewebsites.net/api/getroutedirections', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Start: startCoords.join(','), End: endCoords.join(',') }),
+    });
 
-    try {
-        const response = await fetch(routeUrl);
-        if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`HTTP error! status: ${response.status}, body: ${errorText}`);
-    throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
-}
-
-        const data = await response.json();
-        return data.routes[0].legs[0]; // Assuming the first route and first leg is the desired one
-    } catch (error) {
-        console.error("Error fetching route directions:", error);
-        throw error;
+    if (!response.ok) {
+        throw new Error('Network response was not ok.');
     }
+
+    const jsonResponse = await response.json();
+
+    // Assuming the first route and first leg is the desired one
+    const firstRoute = jsonResponse.routes[0];
+    const firstLeg = firstRoute.legs[0];
+
+    // Transform to the expected RouteSegment format
+    const routeSegment: RouteSegment = {
+        summary: firstLeg.summary,
+        points: firstLeg.points.map((point: any) => ({ latitude: point.latitude, longitude: point.longitude })),
+    };
+
+    return routeSegment;
 };
 
+
 export const renderRouteOnMap = (routeSegment: RouteSegment, map: atlas.Map, dataSource: atlas.source.DataSource): void => {
-    // Clear previous data
     dataSource.clear();
+    
+    if (routeSegment.points.length === 0) {
+        console.error('No points to render.');
+        return;
+    }
 
     const coordinates: atlas.data.Position[] = routeSegment.points.map(point => [point.longitude, point.latitude]);
-
     const lineString = new atlas.data.LineString(coordinates);
     dataSource.add(new atlas.data.Feature(lineString));
 
@@ -52,7 +62,6 @@ export const renderRouteOnMap = (routeSegment: RouteSegment, map: atlas.Map, dat
         map.layers.add(lineLayer);
     }
 
-    // Fit the map view to the route
     map.setCamera({
         bounds: atlas.data.BoundingBox.fromData(lineString),
         padding: 20

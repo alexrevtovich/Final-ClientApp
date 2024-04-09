@@ -47,18 +47,23 @@ const Map: React.FC = () => {
 
   const updateMyLocation = useCallback((value: [number, number] | ((prevState: [number, number]) => [number, number])) => {
     setMyLocation((currentLocation) => {
-      const newLocation = typeof value === 'function' ? value(currentLocation) : value;
-      
-      console.log("Updating myLocation to:", newLocation[0], "Lat,", newLocation[1], "Long");
-  
-      if (typeof newLocation[0] === 'number' && typeof newLocation[1] === 'number') {
-        return newLocation;
-      } else {
-        console.error('Tried to set invalid myLocation:', newLocation);
-        return [29.7174, -95.4028];
-      }
+        // Determine the new location based on whether `value` is a function or directly coordinates
+        const newLocation = typeof value === 'function' ? value(currentLocation) : value;
+        
+        // Log the attempted update for debugging
+        console.log("Attempting to update myLocation to:", newLocation[0], "Lat,", newLocation[1], "Long");
+
+        // Validate the new location to ensure it contains numbers and not null
+        if (newLocation[0] != null && newLocation[1] != null &&
+            !isNaN(newLocation[0]) && !isNaN(newLocation[1])) {
+            return newLocation;
+        } else {
+            console.error('Invalid location received, maintaining current location:', currentLocation);
+            // Return the current location if the new one is invalid, ensuring no update to null
+            return currentLocation;
+        }
     });
-  }, []);
+}, []);
   
 
   const fetchAndDisplayStations = useCallback(async (location: string) => {
