@@ -377,7 +377,7 @@ useEffect(() => {
         {stationData.map((station, index) => (
           <div key={index} className="station-info">
             <p>Station Name: {station.station_name}</p>
-            <p>Charging Count: {station.chargingCount}</p> {/* New: Display charging count */}
+            
             <div>
               <p>Rating: {station.averageRating === 0 ? "This station hasn't been rated yet" : station.averageRating}</p>
               {station.averageRating > 0 && <StarRating rating={station.averageRating} />}
