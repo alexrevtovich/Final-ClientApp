@@ -1,52 +1,40 @@
-// Name of the cache to store Azure Maps API responses and Azure functions data
-const CACHE_NAME = 'api-response-cache-v1';
 
-// Utility function to respond with cache first strategy
-async function cacheFirst(req) {
+// Name of the cache to store responses and data
+const CACHE_NAME = 'EV-SPOTTER-cache-v1';
+
+// Network first strategy, except for specific cache-first paths
+async function networkFirst(req) {
     try {
-        // Try to get the request from the cache
-        const cachedResponse = await caches.match(req);
-        if (cachedResponse) {
-            // Return the cached response if found
-            return cachedResponse;
-        }
-        // If not found in cache, fetch from the network, cache the fresh response, and return it
+        // For network first strategy, always try to fetch from the network first
         const freshResponse = await fetch(req);
+        // Open the cache
         const cache = await caches.open(CACHE_NAME);
-        cache.put(req, freshResponse.clone());
+        // Check if the request method is GET to cache it
+        if (req.method === "GET") {
+            // Cache the fresh response for future requests
+            cache.put(req, freshResponse.clone());
+        }
+        // Return the fresh network response
         return freshResponse;
     } catch (error) {
-        // If the network request fails and no cache is found, throw the original error
+        // If the network request fails, try to serve the response from the cache
+        const cachedResponse = await caches.match(req);
+        if (cachedResponse) {
+            return cachedResponse;
+        }
+        // If there is no cache match, throw the original error
         throw error;
     }
 }
 
-// Install event
-self.addEventListener('install', (event) => {
-    self.skipWaiting(); // Force the waiting service worker to become the active service worker
-});
-
-// Activate event - Clean up old caches
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
-                .map((cacheName) => caches.delete(cacheName))
-            );
-        })
-    );
-});
-
-// Fetch event - Apply cache-first strategy for specific API requests
 self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
 
-    // Apply cache-first strategy to Azure Maps API requests and specific Azure functions
-    if (requestUrl.hostname === 'atlas.microsoft.com' ||
-        requestUrl.href.includes('s24-final-back.azurewebsites.net/api/fetchstations') ||
-        requestUrl.href.includes('s24-final-back.azurewebsites.net/api/fetchstationsalongroute') ||
-        requestUrl.href.includes('s24-final-back.azurewebsites.net/api/GetCars')) {
+    // Apply cache-first strategy only to specific Azure function
+    if (requestUrl.href.includes('s24-final-back.azurewebsites.net/api/GetCars')) {
         event.respondWith(cacheFirst(event.request));
+    } else {
+        // Apply network-first strategy to all other requests
+        event.respondWith(networkFirst(event.request));
     }
 });
