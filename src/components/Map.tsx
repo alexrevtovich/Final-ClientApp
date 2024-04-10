@@ -31,6 +31,15 @@ const Map: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<string | null>(null);
   const [isStationInfoVisible, setIsStationInfoVisible] = useState(true); // State to track visibility
   const [isDetailPanelVisible, setIsDetailPanelVisible] = useState(true); // State to track visibility
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+
+  interface Restaurant {
+    name: string;
+    address: string;
+    phone: string;
+    dist: number;
+  }
+  
 
 
 
@@ -167,30 +176,35 @@ useEffect(() => {
     const initializeMap = async () => {
       if (mapRef.current && !mapInstanceRef.current) {
         let initialLocation = myLocation || [29.7174, -95.4028];
-
-        const map = new atlas.Map(mapRef.current, {
-          authOptions: {
-            authType: atlas.AuthenticationType.subscriptionKey,
-            subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
-          },
-          center: initialLocation,
-          zoom: 15,
-          style: 'road',
-        });
-
-        map.events.add('ready', () => {
-          mapInstanceRef.current = map;
-          datasourceRef.current = new atlas.source.DataSource();
-          map.sources.add(datasourceRef.current);
-          
-          const locationStr = `${initialLocation[0]},${initialLocation[1]}`;
-          fetchAndDisplayStations(locationStr);
-        });
+  
+        try {
+          const map = new atlas.Map(mapRef.current, {
+            authOptions: {
+              authType: atlas.AuthenticationType.subscriptionKey,
+              subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
+            },
+            center: initialLocation,
+            zoom: 15,
+            style: 'road',
+          });
+  
+          map.events.add('ready', async () => {
+            mapInstanceRef.current = map;
+            datasourceRef.current = new atlas.source.DataSource();
+            map.sources.add(datasourceRef.current);
+            
+            const locationStr = `${initialLocation[0]},${initialLocation[1]}`;
+            await fetchAndDisplayStations(locationStr);
+          });
+        } catch (error) {
+          console.error('Map initialization error:', error);
+        }
       }
     };
-
+  
     initializeMap();
-  }, [myLocation, fetchAndDisplayStations]);
+  }, [myLocation, fetchAndDisplayStations]); // Dependencies to re-initialize if these values change
+  
 
   useEffect(() => {
     if (mapInstanceRef.current) {
@@ -248,24 +262,32 @@ useEffect(() => {
 
   const handleDetailsClick = async (station: StationData) => {
     try {
-      // Corrected to use POST request to the /api/SumCharging endpoint
+      // Existing code for fetching station details
       const sumResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/sumcharging', {
         StationId: station.id,
       });
-      // Assuming the response structure has 'ac', 'dc', and optionally 'chargingCount'
       const { ac, dc } = sumResponse.data;
-      station.AC = ac || 0; // Adjust to match the response structure
+      station.AC = ac || 0;
       station.DC = dc || 0;
-      setActiveDetailPanel(station);
-     
+  
+      // New code to fetch restaurants
+      const restaurantsResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/GetPOIs', {
+        Latitude: station.latitude,
+        Longitude: station.longitude,
+      });
+  
+      setRestaurants(restaurantsResponse.data); // Update the restaurants state with the fetched data
+  
+      setActiveDetailPanel(station); // This remains unchanged
     } catch (error) {
-      console.error(`Failed to fetch charging info for stationId ${station.id}:`, error);
-      // If fetching fails, consider how you want to handle this. For now, let's log and move on.
-      station.AC = 0; // Setting default values as a fallback
+      console.error('Failed to fetch additional info for station:', error);
+      // Handle errors for both station details and restaurant fetching
+      station.AC = 0;
       station.DC = 0;
-      setActiveDetailPanel(station); // You may decide to still set the active detail panel or handle differently
+      setActiveDetailPanel(station); // You may still want to show the panel even if some data fetches failed
     }
   };
+  
   
   
   
@@ -353,6 +375,8 @@ useEffect(() => {
     }
   };
 
+
+
   
 
   return (
@@ -425,6 +449,24 @@ useEffect(() => {
         
         <hr /> {/* Separation line */}
         <button className="base-button" onClick={handleTripClick}>Show stations along the route</button>
+        <hr /> {/* Separation line */}
+        <h3>Restaurants Nearby:</h3>
+        <hr /> {/* Separation line */}
+        {restaurants.length > 0 ? (
+            <ul className="restaurant-list">
+              {restaurants.map((restaurant, index) => (
+                <li key={index} className="restaurant-item">
+                  <p><strong>{restaurant.name}</strong></p>
+                  <p>Address: {restaurant.address}</p>
+                  <p>Phone: {restaurant.phone}</p>
+                  <p>Distance: {restaurant.dist} meters away</p>
+                </li>
+              ))}
+            </ul>
+      ) : (
+        <p>No restaurants found.</p>
+      )
+    }
 
 
       </div>
