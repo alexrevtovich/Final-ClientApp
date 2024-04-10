@@ -32,7 +32,8 @@ const Map: React.FC = () => {
   const [isStationInfoVisible, setIsStationInfoVisible] = useState(true); // State to track visibility
   const [isDetailPanelVisible, setIsDetailPanelVisible] = useState(true); // State to track visibility
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-
+  const [isRestaurantListVisible, setIsRestaurantListVisible] = useState(false);
+  
   interface Restaurant {
     name: string;
     address: string;
@@ -42,6 +43,9 @@ const Map: React.FC = () => {
   
 
 
+  const toggleRestaurantListVisibility = () => {
+    setIsRestaurantListVisible(prevState => !prevState);
+  };  
 
   const toggleVisibility = () => {
     const newVisibility = !isStationInfoVisible;
@@ -450,23 +454,33 @@ useEffect(() => {
         <hr /> {/* Separation line */}
         <button className="base-button" onClick={handleTripClick}>Show stations along the route</button>
         <hr /> {/* Separation line */}
-        <h3>Restaurants Nearby:</h3>
-        <hr /> {/* Separation line */}
-        {restaurants.length > 0 ? (
-            <ul className="restaurant-list">
-              {restaurants.map((restaurant, index) => (
-                <li key={index} className="restaurant-item">
-                  <p><strong>{restaurant.name}</strong></p>
-                  <p>Address: {restaurant.address}</p>
-                  <p>Phone: {restaurant.phone}</p>
-                  <p>Distance: {restaurant.dist} meters away</p>
-                </li>
-              ))}
-            </ul>
-      ) : (
-        <p>No restaurants found.</p>
-      )
-    }
+        
+        
+        {/* Restaurants Nearby Section */}
+        <div className="restaurants-nearby-section">
+          
+          <button onClick={toggleRestaurantListVisibility} className="base-button">
+            {isRestaurantListVisible ? 'Hide Restaurants Nearby:' : 'Show Restaurants Nearby:'}
+          </button>
+          <hr />
+          {isRestaurantListVisible && (
+            restaurants.length > 0 ? (
+              <ul className="restaurant-list">
+                {restaurants.map((restaurant, index) => (
+                  <li key={index} className="restaurant-item">
+                    <p><strong>{restaurant.name}</strong></p>
+                    <p>Address: {restaurant.address}</p>
+                    <p>Phone: {restaurant.phone}</p>
+                    <p>Distance: {restaurant.dist} meters away</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No restaurants found.</p>
+            )
+          )}
+        </div>
+
 
 
       </div>
