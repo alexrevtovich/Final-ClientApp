@@ -40,6 +40,52 @@ const Map: React.FC = () => {
     phone: string;
     dist: number;
   }
+
+  // This useEffect is dedicated to initializing the map with the default location
+  useEffect(() => {
+    if (mapRef.current && !mapInstanceRef.current) {
+      const initialLocation = [29.7174, -95.4028]; // Default location explicitly set here
+      const map = new atlas.Map(mapRef.current, {
+        authOptions: {
+          authType: atlas.AuthenticationType.subscriptionKey,
+          subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
+        },
+        center: initialLocation,
+        zoom: 15,
+        style: 'road',
+      });
+
+      map.events.add('ready', () => {
+        mapInstanceRef.current = map;
+        datasourceRef.current = new atlas.source.DataSource();
+        map.sources.add(datasourceRef.current);
+      });
+    }
+  }, []); // Empty dependency array to ensure this runs only once on mount
+
+  // Adjusted to directly use navigator.geolocation to fetch the user's location
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const userLocation: [number, number] = [position.coords.latitude, position.coords.longitude];
+      setMyLocation(userLocation); // Update state to trigger any dependent operations
+
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.setCamera({
+          center: userLocation,
+          zoom: 15,
+        });
+      }
+
+      // After setting the user's location, you might want to fetch and display stations
+      const locationStr = `${userLocation[1]},${userLocation[0]}`; // Note the order: latitude, longitude
+      fetchAndDisplayStations(locationStr);
+    }, (error) => console.error('Error fetching the user location:', error), {
+      enableHighAccuracy: true,
+    });
+  }, []);
+
+
+
   
 
 
