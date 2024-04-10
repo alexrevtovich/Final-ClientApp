@@ -7,16 +7,30 @@ const reverseGeocode = async (coordinates: [number, number]): Promise<string> =>
       return '';
   }
 
-  const subscriptionKey = process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY;
-  const url = `https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0&query=${latitude},${longitude}&subscription-key=${subscriptionKey}`;
+  const url = 'https://s24-final-back.azurewebsites.net/api/reversegeocode';
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Latitude: latitude,
+        Longitude: longitude
+      }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
     const data = await response.json();
 
-    if (data.addresses && data.addresses.length > 0) {
-      const address = data.addresses[0].address.freeformAddress;
-      return address;
+    // Assuming the Azure Function returns just the address as a string in the response body
+    // If the structure is different, adjust the parsing accordingly
+    if (data) {
+      return data;
     } else {
       console.log('No address found for these coordinates.');
       return '';
