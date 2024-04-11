@@ -282,6 +282,29 @@ const handleEMPulse = async () => {
   }
 };
 
+const handlePlus1to15 = async () => {
+  try {
+    const response = await fetch('https://s24-final-back.azurewebsites.net/api/plus1to15', { // Ensure the URL is correct
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ useremail: userEmail, unique_id: userInfo.mainCar }),
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  console.log("Plus 10 Percent response:", data); // Check if this logs a consistent, correct charge value
+
+  // Temporarily comment out the state update to isolate the issue
+  // setLatestCharge({ uniqueId: userInfo.mainCar, charge: data.charge });
+
+} catch (error) {
+  console.error('Error triggering Plus 10 Percent:', error);
+}
+};
+
 
   
     
@@ -303,7 +326,9 @@ const handleEMPulse = async () => {
         Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear})` : 'No car info'} 
       </div>
       <div className="charge-info">
-        Current Main Car Charge: {latestCharge.charge}% <button onClick={handleEMPulse}>EM Pulse</button>
+        Current Main Car Charge: {latestCharge.charge}% 
+        <button onClick={handleEMPulse}>EM Pulse</button>
+        <button onClick={handlePlus1to15}>Charge</button> 
       </div>
       
       <button className="base-button" onClick={toggleCarsList}>{showCarsList ? 'Hide' : 'Show'} My Garage</button>
