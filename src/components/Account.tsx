@@ -39,6 +39,8 @@ const Account: React.FC = () => {
   const [showCarsList, setShowCarsList] = useState(false);
   const [showUpdateNameModal, setShowUpdateNameModal] = useState(false);
   const [newUsername, setNewUsername] = useState('');
+  const [latestCharge, setLatestCharge] = useState({ uniqueId: "", charge: 0 });
+
 
 
 
@@ -59,9 +61,16 @@ const Account: React.FC = () => {
         }));
       }
     });
-    
-    
 
+    //charge update
+    connection.on("chargeLevelUpdated", async (data) => {
+      if (data.userEmail === userEmail) {
+        setLatestCharge({ uniqueId: data.uniqueId, charge: data.Charge });
+        // Optionally, update carInfo or carsInfo if this charge update is for one of them
+      }
+    });
+    
+    
     // Listen for mainCarUpdated messages
     connection.on("mainCarUpdated", async (data) => {
       // Check if the update is relevant to the current user
@@ -199,34 +208,78 @@ const Account: React.FC = () => {
   };
   
 
-  const setMainCar = async (email: string, mainCarId: string): Promise<void> => {
-    try {
-        const response = await fetch('https://s24-final-back.azurewebsites.net/api/SetMainCar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, mainCarId }),
-        });
+  const setMainCar = async (email: string, mainCarId: string) => {
+  try {
+    const response = await fetch('https://s24-final-back.azurewebsites.net/api/SetMainCar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, mainCarId }),
+    });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        
-        // Assume success and optimistically update the local state to reflect the new main car
-        setUserInfo(prevUserInfo => ({
-            ...prevUserInfo,
-            mainCar: mainCarId,
-        }));
-
-        // Optionally, if carInfo is displayed elsewhere and needs to be updated
-        const updatedMainCarInfo = await fetchCarInfo(mainCarId);
-        setCarInfo(updatedMainCarInfo);
-
-        
-    } catch (error) {
-        console.error('Error setting main car:', error);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
+
+    // Assume success and optimistically update the local state to reflect the new main car
+    setUserInfo(prevUserInfo => ({
+      ...prevUserInfo,
+      mainCar: mainCarId,
+    }));
+
+    // Fetch the charge level for the new main car
+    getChargeLevel(email, mainCarId);
+  } catch (error) {
+    console.error('Error setting main car:', error);
+  }
+};
+
+
+const getChargeLevel = async (email: string, mainCarId: string) => {
+  try {
+    const response = await fetch('https://s24-final-back.azurewebsites.net/api/GetChargeLevel', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ useremail: email, unique_id: mainCarId }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("Charge level response:", data); // Debugging line
+    // Note the change here from data.Charge to data.charge to match your API response
+    setLatestCharge({ uniqueId: mainCarId, charge: data.charge });
+  } catch (error) {
+    console.error('Error fetching charge level:', error);
+  }
+};
+
+const handleEMPulse = async () => {
+  try {
+    const response = await fetch('https://s24-final-back.azurewebsites.net/api/EMpulse', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ useremail: userEmail, unique_id: userInfo.mainCar }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("EM Pulse response:", data); // Debugging line
+
+    // Assuming the function returns the updated charge level, update the state. Adjust according to the actual response.
+    setLatestCharge({ uniqueId: userInfo.mainCar, charge: 0 });
+
+    // Optionally, refresh the charge level display if necessary
+    // getChargeLevel(userEmail, userInfo.mainCar);
+  } catch (error) {
+    console.error('Error triggering EM pulse:', error);
+  }
 };
 
 
@@ -247,8 +300,10 @@ const Account: React.FC = () => {
         You are here: {address || 'Fetching your address...'}
       </div>
       <div className="account-info">
-        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear}) - ${carInfo.charge}%` : 'No car info'} 
-        
+        Your car is: {carInfo ? `${carInfo.brand} ${carInfo.model} (${carInfo.releaseYear})` : 'No car info'} 
+      </div>
+      <div className="charge-info">
+        Current Main Car Charge: {latestCharge.charge}% <button onClick={handleEMPulse}>EM Pulse</button>
       </div>
       
       <button className="base-button" onClick={toggleCarsList}>{showCarsList ? 'Hide' : 'Show'} My Garage</button>
