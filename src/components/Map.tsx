@@ -10,6 +10,7 @@ import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review';
 import StarRating from '../utils/starRating';
+import trackLocation from '../utils/trackLocation'
 // import chargeCar from '../utils/chargeCar';
 import { fetchStationsAlongRoute } from '../utils/trip';
 import axios from 'axios';
@@ -23,6 +24,7 @@ const Map: React.FC = () => {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<atlas.Map | null>(null);
   const datasourceRef = useRef<atlas.source.DataSource | null>(null);
+  const userLocationPinRef = useRef<atlas.HtmlMarker | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [stationData, setStationData] = useState<StationData[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +35,9 @@ const Map: React.FC = () => {
   const [isDetailPanelVisible, setIsDetailPanelVisible] = useState(true); // State to track visibility
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [isRestaurantListVisible, setIsRestaurantListVisible] = useState(false);
+  const [distanceInput, setDistanceInput] = useState('5');
+  // Using trackLocation to get the real-time location
+  const trackedLocation = trackLocation();
   
   interface Restaurant {
     name: string;
@@ -40,52 +45,6 @@ const Map: React.FC = () => {
     phone: string;
     dist: number;
   }
-
-  // This useEffect is dedicated to initializing the map with the default location
-  useEffect(() => {
-    if (mapRef.current && !mapInstanceRef.current) {
-      const initialLocation = [29.7174, -95.4028]; // Default location explicitly set here
-      const map = new atlas.Map(mapRef.current, {
-        authOptions: {
-          authType: atlas.AuthenticationType.subscriptionKey,
-          subscriptionKey: process.env.REACT_APP_AZURE_MAPS_SUBSCRIPTION_KEY,
-        },
-        center: initialLocation,
-        zoom: 15,
-        style: 'road',
-      });
-
-      map.events.add('ready', () => {
-        mapInstanceRef.current = map;
-        datasourceRef.current = new atlas.source.DataSource();
-        map.sources.add(datasourceRef.current);
-      });
-    }
-  }, []); // Empty dependency array to ensure this runs only once on mount
-
-  // Adjusted to directly use navigator.geolocation to fetch the user's location
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const userLocation: [number, number] = [position.coords.latitude, position.coords.longitude];
-      setMyLocation(userLocation); // Update state to trigger any dependent operations
-
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.setCamera({
-          center: userLocation,
-          zoom: 15,
-        });
-      }
-
-      // After setting the user's location, you might want to fetch and display stations
-      const locationStr = `${userLocation[1]},${userLocation[0]}`; // Note the order: latitude, longitude
-      fetchAndDisplayStations(locationStr);
-    }, (error) => console.error('Error fetching the user location:', error), {
-      enableHighAccuracy: true,
-    });
-  }, []);
-
-
-
   
 
 
@@ -209,6 +168,31 @@ useEffect(() => {
 
 
   
+  // Effect hook to update the user's location pin in real-time
+  useEffect(() => {
+    if (trackedLocation && mapInstanceRef.current) {
+      const [lat, lon] = trackedLocation;
+
+      // If the pin doesn't exist, create it
+      if (!userLocationPinRef.current) {
+        userLocationPinRef.current = new atlas.HtmlMarker({
+          position: [lon, lat],
+          color: 'red', // Use the red pin
+          text: 'You are here'
+        });
+        mapInstanceRef.current.markers.add(userLocationPinRef.current);
+      } else {
+        // If the pin exists, just update its position
+        userLocationPinRef.current.setOptions({
+          position: [lon, lat],
+        });
+      }
+
+      // Optionally, center the map on the new location
+      // mapInstanceRef.current.setCamera({ center: [lon, lat] });
+    }
+  }, [trackedLocation]);
+
   
 
   useEffect(() => {
@@ -224,9 +208,9 @@ useEffect(() => {
 
   useEffect(() => {
     const initializeMap = async () => {
+      // Keep the default initial location for map initialization
+      const initialLocation = [29.7174, -95.4028];
       if (mapRef.current && !mapInstanceRef.current) {
-        let initialLocation = myLocation || [29.7174, -95.4028];
-  
         try {
           const map = new atlas.Map(mapRef.current, {
             authOptions: {
@@ -253,7 +237,7 @@ useEffect(() => {
     };
   
     initializeMap();
-  }, [myLocation, fetchAndDisplayStations]); // Dependencies to re-initialize if these values change
+  }, [fetchAndDisplayStations]); // Dependencies to re-initialize if these values change
   
 
   useEffect(() => {
@@ -393,10 +377,20 @@ useEffect(() => {
       alert('Failed to stop charging. Please try again later.');
     }
   };
-  
+
+
+  const handleDistanceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Ensure only digits 1-9 are accepted
+    const value = e.target.value;
+    if (/^[1-9]$/.test(value) || value === '') {
+      setDistanceInput(value);
+    }
+  };
 
 
   const handleTripClick = async () => {
+    // Convert distanceInput to a number, default to 5 if empty
+    const distance = distanceInput ? parseInt(distanceInput, 10) : 5;
     if (!currentRoute) {
       console.log("No route selected.");
       return;
@@ -405,7 +399,7 @@ useEffect(() => {
     try {
       const stationsAlongRoute = await fetchStationsAlongRoute({
         linestring: currentRoute,
-        distance: 5, // Set the distance as needed
+        distance, // Set the distance as needed
       });
   
       setStationData(stationsAlongRoute);
@@ -498,7 +492,16 @@ useEffect(() => {
         <button className="base-button" onClick={handleStopChargingClick}>Stop Charging</button> {/* New "Stop Charging" button */}
         
         <hr /> {/* Separation line */}
-        <button className="base-button" onClick={handleTripClick}>Show stations along the route</button>
+        <p>Show stations along the route:</p>
+        <input
+        type="text"
+        value={distanceInput}
+        onChange={handleDistanceInputChange}
+        placeholder="miles"
+        maxLength={1} // Limit input length to 1 character
+        style={{ width: '30px', marginRight: '10px' }} // Adjust styling as needed
+      />
+      <button className="base-button" onClick={handleTripClick}>Show stations</button>
         <hr /> {/* Separation line */}
         
         
