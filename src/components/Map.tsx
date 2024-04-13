@@ -461,7 +461,7 @@ useEffect(() => {
           onKeyDown={handleKeyDown}
           aria-label="Location Input"
         />
-        <button onClick={handleSubmit} className="base-button">
+        <button onClick={handleSubmit} >
             <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
       </div>
