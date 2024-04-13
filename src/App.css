@@ -336,6 +336,17 @@ body {
   cursor: pointer;
   /* Add any additional styling you want here */
 }
+.toggle-follow-me {
+  background-color: whitesmoke;
+  color: #004080; /* Dark blue text color */
+  border: 1px solid #004080; /* Dark blue border */
+  position: absolute;
+  z-index: 1050;
+  left: 50px;
+  top: 10px;
+  cursor: pointer;
+  /* Add any additional styling you want here */
+}
 
 @media screen and (min-width: 601px) {
 
@@ -421,6 +432,12 @@ body {
   .toggle-station-info {
     top: 52px; /* 60 pixels lower than its default position */
     right: 10px; /* Align to the right side */
+    left: auto; /* Reset the default left alignment */
+
+  }
+  .toggle-follow-me {
+    top: 52px; /* 60 pixels lower than its default position */
+    right: 50px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
   }

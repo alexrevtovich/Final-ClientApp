@@ -38,6 +38,9 @@ const Map: React.FC = () => {
   const [distanceInput, setDistanceInput] = useState('5');
   // Using trackLocation to get the real-time location
   const trackedLocation = trackLocation();
+  // A tate to control auto-centering
+  const [autoCenter, setAutoCenter] = useState(false);
+
   
   interface Restaurant {
     name: string;
@@ -46,7 +49,9 @@ const Map: React.FC = () => {
     dist: number;
   }
   
-
+    const handleToggleAutoCenter = () => {
+      setAutoCenter(prevState => !prevState);
+  };
 
   const toggleRestaurantListVisibility = () => {
     setIsRestaurantListVisible(prevState => !prevState);
@@ -173,30 +178,31 @@ useEffect(() => {
     if (trackedLocation && mapInstanceRef.current) {
       const [lat, lon] = trackedLocation;
 
-      // If the pin doesn't exist, create it
+      // Update or create the marker
       if (!userLocationPinRef.current) {
         userLocationPinRef.current = new atlas.HtmlMarker({
           position: [lon, lat],
-          color: 'red', // Specify pin color
-          text: 'You ', // Text to display
-          secondaryText: ' ', // Helpful to ensure text does not overlap with pin
+          color: 'red',
+          text: 'You',
           popup: new atlas.Popup({
-            content: '<div>You are here</div>', // Optional: Define popup content for additional information
-            pixelOffset: [0, -22] // Adjust vertically to show above the pin
+            content: '<div>You are here</div>',
+            pixelOffset: [0, -22]
           })
         });
         mapInstanceRef.current.markers.add(userLocationPinRef.current);
       } else {
-        // If the pin exists, just update its position
-        userLocationPinRef.current.setOptions({
-          position: [lon, lat],
-        });
+        userLocationPinRef.current.setOptions({ position: [lon, lat] });
       }
 
-      // Optionally, center the map on the new location
-      // mapInstanceRef.current.setCamera({ center: [lon, lat] });
+      // Center the map on the new location if autoCenter is true
+      if (autoCenter) {
+        mapInstanceRef.current.setCamera({ center: [lon, lat], zoom: 15 });
+      }
     }
-}, [trackedLocation]);
+}, [trackedLocation, autoCenter]); // Include autoCenter in the dependency array
+
+
+
 
 
   
@@ -435,6 +441,10 @@ useEffect(() => {
       <button onClick={toggleVisibility} className="toggle-station-info">
         {isStationInfoVisible ? '↓↓↓' : '↑↑↑'}
       </button>
+      <button onClick={handleToggleAutoCenter} className="toggle-follow-me">
+        {autoCenter ? '     Stop Following Me' : '     Follow Me'}
+      </button>
+      
 
       <div className="search-container">
         <input
