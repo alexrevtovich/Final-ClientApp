@@ -15,6 +15,9 @@ import trackLocation from '../utils/trackLocation'
 import { fetchStationsAlongRoute } from '../utils/trip';
 import axios from 'axios';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCrosshairs, faBan  } from '@fortawesome/free-solid-svg-icons';
+
 
 
 
@@ -442,8 +445,10 @@ useEffect(() => {
         {isStationInfoVisible ? '↓↓↓' : '↑↑↑'}
       </button>
       <button onClick={handleToggleAutoCenter} className="toggle-follow-me">
-        {autoCenter ? '     Stop Following Me' : '     Follow Me'}
-      </button>
+        {autoCenter ? <FontAwesomeIcon icon={faBan} /> : <FontAwesomeIcon icon={faCrosshairs} />}
+        {autoCenter ? '' : ''}
+    </button>
+
       
 
       <div className="search-container">
