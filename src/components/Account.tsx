@@ -103,10 +103,12 @@ const Account: React.FC = () => {
         try {
           const accountInfo = await fetchAccountInfo(userEmail);
           setUserInfo(accountInfo);
-
+  
           if (accountInfo.mainCar && accountInfo.mainCar !== "None") {
             const mainCarInfo = await fetchCarInfo(accountInfo.mainCar);
             setCarInfo(mainCarInfo);
+            // Fetch the initial charge level for the main car
+            getChargeLevel(userEmail, accountInfo.mainCar);
           }
         } catch (error) {
           console.error('Failed to fetch account info:', error);
@@ -115,7 +117,8 @@ const Account: React.FC = () => {
     }
     getMyLocation(setMyLocation);
   }, [navigate, userEmail]);
-
+  
+  
   useEffect(() => {
     (async () => {
       if (myLocation[0] !== 0 || myLocation[1] !== 0) {
@@ -249,7 +252,7 @@ const getChargeLevel = async (email: string, mainCarId: string) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("Charge level response:", data); // Debugging line
+    //console.log("Charge level response:", data);
     // Note the change here from data.Charge to data.charge to match your API response
     setLatestCharge({ uniqueId: mainCarId, charge: data.charge });
   } catch (error) {
@@ -270,7 +273,7 @@ const handleEMPulse = async () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("EM Pulse response:", data); // Debugging line
+    //console.log("EM Pulse response:", data); // Debugging line
 
     // Assuming the function returns the updated charge level, update the state. Adjust according to the actual response.
     setLatestCharge({ uniqueId: userInfo.mainCar, charge: 0 });
@@ -295,7 +298,7 @@ const handlePlus1to15 = async () => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   const data = await response.json();
-  console.log("Plus 10 Percent response:", data); // Check if this logs a consistent, correct charge value
+  //console.log("Plus 1-15 Percent response:", data); // Check if this logs a consistent, correct charge value
 
   // Temporarily comment out the state update to isolate the issue
   // setLatestCharge({ uniqueId: userInfo.mainCar, charge: data.charge });
