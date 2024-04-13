@@ -16,7 +16,7 @@ import { fetchStationsAlongRoute } from '../utils/trip';
 import axios from 'axios';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCrosshairs, faBan  } from '@fortawesome/free-solid-svg-icons';
+import { faCrosshairs, faBan, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -442,8 +442,9 @@ useEffect(() => {
     <>
       {/* Toggle Button */}
       <button onClick={toggleVisibility} className="toggle-station-info">
-        {isStationInfoVisible ? '↓↓↓' : '↑↑↑'}
+          {isStationInfoVisible ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} />}
       </button>
+
       <button onClick={handleToggleAutoCenter} className="toggle-follow-me">
         {autoCenter ? <FontAwesomeIcon icon={faBan} /> : <FontAwesomeIcon icon={faCrosshairs} />}
         {autoCenter ? '' : ''}

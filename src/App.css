@@ -360,8 +360,11 @@ body {
   left: 10px;
   top: 10px;
   cursor: pointer;
-  /* Add any additional styling you want here */
 }
+.toggle-station-info:hover {
+  background-color: #e9e8e8; /* Slightly darker on hover */
+}
+
 .toggle-follow-me {
   background-color: whitesmoke;
   color: #004080; /* Dark blue text color */
@@ -460,12 +463,12 @@ body {
 
   .toggle-station-info {
     top: 52px; /* 60 pixels lower than its default position */
-    right: 10px; /* Align to the right side */
+    right: 40px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
   }
   .toggle-follow-me {
-    top: 72px; /* 60 pixels lower than its default position */
+    top: 52px; /* 60 pixels lower than its default position */
     right: 10px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
