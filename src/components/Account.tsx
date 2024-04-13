@@ -328,8 +328,6 @@ const handlePlus1to15 = async () => {
       </div>
       <div className="charge-info">
         Current Main Car Charge: {latestCharge.charge}% 
-        <button onClick={handleEMPulse}>EM Pulse</button>
-        <button onClick={handlePlus1to15}>Charge</button> 
       </div>
       
       <button className="base-button" onClick={toggleCarsList}>{showCarsList ? 'Hide' : 'Show'} My Garage</button>
@@ -390,10 +388,15 @@ const handlePlus1to15 = async () => {
       title="Close"
     />
   </div>
+  
 )}
 
-
+        <div className="bottom-buttons">
+            <button onClick={handleEMPulse} className="bottom-button">EM Pulse</button>
+            <button onClick={handlePlus1to15} className="bottom-button">Charge</button>
+        </div>
     </div>
+    
   );
 };
 

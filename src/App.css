@@ -32,6 +32,32 @@ body {
   opacity: 0.8;
 }
 
+/* Bottom button container */
+.bottom-buttons {
+  position: fixed; /* Fixed positioning */
+  bottom: 30px; /* 10px from the bottom */
+  left: 50%; /* Centered horizontally */
+  transform: translateX(-50%); /* Adjust translation to truly center the div */
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  z-index: 1050; /* High z-index to ensure visibility */
+}
+
+/* Styling for bottom buttons */
+.bottom-button {
+  background-color: #004080; /* Dark blue background */
+  color: white; /* White text */
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px; /* Rounded corners */
+}
+
+.bottom-button:hover {
+  background-color: #002050; /* Slightly darker blue on hover */
+}
+
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -430,13 +456,13 @@ body {
   }
 
   .toggle-station-info {
-    top: 72px; /* 60 pixels lower than its default position */
+    top: 52px; /* 60 pixels lower than its default position */
     right: 10px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
   }
   .toggle-follow-me {
-    top: 52px; /* 60 pixels lower than its default position */
+    top: 72px; /* 60 pixels lower than its default position */
     right: 10px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
