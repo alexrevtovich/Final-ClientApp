@@ -177,8 +177,13 @@ useEffect(() => {
       if (!userLocationPinRef.current) {
         userLocationPinRef.current = new atlas.HtmlMarker({
           position: [lon, lat],
-          color: 'red', // Use the red pin
-          text: 'You are here'
+          color: 'red', // Specify pin color
+          text: 'You ', // Text to display
+          secondaryText: ' ', // Helpful to ensure text does not overlap with pin
+          popup: new atlas.Popup({
+            content: '<div>You are here</div>', // Optional: Define popup content for additional information
+            pixelOffset: [0, -22] // Adjust vertically to show above the pin
+          })
         });
         mapInstanceRef.current.markers.add(userLocationPinRef.current);
       } else {
@@ -189,9 +194,10 @@ useEffect(() => {
       }
 
       // Optionally, center the map on the new location
-      // mapInstanceRef.current.setCamera({ center: [lon, lat] });
+       mapInstanceRef.current.setCamera({ center: [lon, lat] });
     }
-  }, [trackedLocation]);
+}, [trackedLocation]);
+
 
   
 
