@@ -91,7 +91,7 @@ const Account: React.FC = () => {
     return () => {
       connection.stop();
     };
-  }, [userEmail]); // Ensure this setup is correct
+  }, [userEmail]); 
   
 
   useEffect(() => {
@@ -253,7 +253,7 @@ const getChargeLevel = async (email: string, mainCarId: string) => {
     }
     const data = await response.json();
     //console.log("Charge level response:", data);
-    // Note the change here from data.Charge to data.charge to match your API response
+    
     setLatestCharge({ uniqueId: mainCarId, charge: data.charge });
   } catch (error) {
     console.error('Error fetching charge level:', error);
@@ -272,14 +272,14 @@ const handleEMPulse = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
+    //const data = await response.json();
     //console.log("EM Pulse response:", data); // Debugging line
 
     // Assuming the function returns the updated charge level, update the state. Adjust according to the actual response.
     setLatestCharge({ uniqueId: userInfo.mainCar, charge: 0 });
 
     // Optionally, refresh the charge level display if necessary
-    // getChargeLevel(userEmail, userInfo.mainCar);
+    // getChargeLevel(userEmail, userInfo.mainCar); - no needs since I have it updated using SignalR
   } catch (error) {
     console.error('Error triggering EM pulse:', error);
   }
@@ -297,11 +297,9 @@ const handlePlus1to15 = async () => {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  const data = await response.json();
+  //const data = await response.json();
   //console.log("Plus 1-15 Percent response:", data); // Check if this logs a consistent, correct charge value
 
-  // Temporarily comment out the state update to isolate the issue
-  // setLatestCharge({ uniqueId: userInfo.mainCar, charge: data.charge });
 
 } catch (error) {
   console.error('Error triggering Plus 10 Percent:', error);
