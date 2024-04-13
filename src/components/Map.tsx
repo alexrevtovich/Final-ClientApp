@@ -16,7 +16,7 @@ import { fetchStationsAlongRoute } from '../utils/trip';
 import axios from 'axios';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCrosshairs, faBan, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faCrosshairs, faBan, faEye, faEyeSlash, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -461,7 +461,9 @@ useEffect(() => {
           onKeyDown={handleKeyDown}
           aria-label="Location Input"
         />
-        <button onClick={handleSubmit}>Find</button>
+        <button onClick={handleSubmit} className="base-button">
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+        </button>
       </div>
 
       <div ref={mapRef} className="map-container" />
