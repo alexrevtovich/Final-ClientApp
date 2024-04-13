@@ -392,6 +392,9 @@ const handlePlus1to15 = async () => {
 )}
 
         <div className="bottom-buttons">
+            <hr />
+            Emulator to demonstrate charge real-time updates
+            <hr />         
             <button onClick={handleEMPulse} className="bottom-button">EM Pulse</button>
             <button onClick={handlePlus1to15} className="bottom-button">Charge</button>
         </div>
