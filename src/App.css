@@ -430,14 +430,14 @@ body {
   }
 
   .toggle-station-info {
-    top: 52px; /* 60 pixels lower than its default position */
+    top: 72px; /* 60 pixels lower than its default position */
     right: 10px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
   }
   .toggle-follow-me {
     top: 52px; /* 60 pixels lower than its default position */
-    right: 50px; /* Align to the right side */
+    right: 10px; /* Align to the right side */
     left: auto; /* Reset the default left alignment */
 
   }
