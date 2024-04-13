@@ -194,7 +194,7 @@ useEffect(() => {
       }
 
       // Optionally, center the map on the new location
-       mapInstanceRef.current.setCamera({ center: [lon, lat] });
+      // mapInstanceRef.current.setCamera({ center: [lon, lat] });
     }
 }, [trackedLocation]);
 
