@@ -397,7 +397,7 @@ body {
     transform: translateX(-50%); /* Adjust horizontally to truly center */
     width: 246px; 
     z-index: 100;
-    background-color: #e9ecef; /* Optional: background color for visibility */
+    background-color: transparent; /* Optional: background color for visibility */
   }
 
   .search-container input[type="text"] {
@@ -453,11 +453,11 @@ body {
     transform: translateX(-50%); /* Adjust horizontally to truly center */
     width: 246px; 
     z-index: 100;
-    background-color: #e9ecef; /* Optional: background color for visibility */
+    background-color: transparent; /* Optional: background color for visibility */
   }
 
   .search-container input[type="text"] {
-    width: 200px; /* Set width for the input field */
+    width: 208px; /* Set width for the input field */
     /* Add any other styling as needed */
   }
 
