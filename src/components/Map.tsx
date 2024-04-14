@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { fetchStations } from '../utils/stations';
 import { addPinsToMap } from '../utils/pinsonmap';
 import { StationData } from '../utils/stations';
-import reverseGeocode from '../utils/reverse';
 import { getRouteDirections, renderRouteOnMap } from '../utils/route';
 import getMyLocation from '../utils/mylocation';
 import Review from '../utils/review';
@@ -119,7 +118,7 @@ const Map: React.FC = () => {
                 zoom: 15,
             });
 
-            addPinsToMap(stationsWithChargingInfo, mapInstanceRef.current, setActiveDetailPanel);
+            addPinsToMap(stationsWithChargingInfo, mapInstanceRef.current, setActiveDetailPanel, fetchRestaurantsForStation);
         } else {
             setError('No stations found for the provided location.');
         }
@@ -206,14 +205,6 @@ useEffect(() => {
 
 
 
-
-
-  
-
-  useEffect(() => {
-    getMyLocation(updateMyLocation);
-  }, [updateMyLocation]);
-
   useEffect(() => {
     if (!sessionStorage.getItem('userEmail')) {
       console.log('No user email found, redirecting to login...');
@@ -253,25 +244,11 @@ useEffect(() => {
   
     initializeMap();
   }, [fetchAndDisplayStations]); // Dependencies to re-initialize if these values change
+
+  useEffect(() => {
+    getMyLocation(updateMyLocation);
+  }, [updateMyLocation]);
   
-
-  useEffect(() => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.setCamera({
-        center: myLocation,
-        zoom: 15,
-      });
-    }
-  }, [myLocation]);
-
-  useEffect(() => {
-    const fetchAndSetAddress = async () => {
-      const address = await reverseGeocode(myLocation);
-      setInputValue(address);
-    };
-
-    fetchAndSetAddress();
-  }, [myLocation]);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -309,33 +286,39 @@ useEffect(() => {
     }
   };
 
+  async function fetchRestaurantsForStation(station: StationData) {
+    try {
+        const restaurantsResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/GetPOIs', {
+            Latitude: station.latitude,
+            Longitude: station.longitude,
+        });
+        setRestaurants(restaurantsResponse.data);
+    } catch (error) {
+        console.error('Failed to fetch restaurants:', error);
+        setRestaurants([]); // Clear or handle error state appropriately
+    }
+}
+
   const handleDetailsClick = async (station: StationData) => {
     try {
-      // Existing code for fetching station details
-      const sumResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/sumcharging', {
-        StationId: station.id,
-      });
-      const { ac, dc } = sumResponse.data;
-      station.AC = ac || 0;
-      station.DC = dc || 0;
-  
-      // New code to fetch restaurants
-      const restaurantsResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/GetPOIs', {
-        Latitude: station.latitude,
-        Longitude: station.longitude,
-      });
-  
-      setRestaurants(restaurantsResponse.data); // Update the restaurants state with the fetched data
-  
-      setActiveDetailPanel(station); // This remains unchanged
+        const sumResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/sumcharging', {
+            StationId: station.id,
+        });
+        station.AC = sumResponse.data.ac || 0;
+        station.DC = sumResponse.data.dc || 0;
+
+        // Fetch and update restaurants
+        await fetchRestaurantsForStation(station);
+
+        setActiveDetailPanel(station); // Update detail panel
     } catch (error) {
-      console.error('Failed to fetch additional info for station:', error);
-      // Handle errors for both station details and restaurant fetching
-      station.AC = 0;
-      station.DC = 0;
-      setActiveDetailPanel(station); // You may still want to show the panel even if some data fetches failed
+        console.error('Failed to fetch additional info for station:', error);
+        station.AC = 0;
+        station.DC = 0;
+        setActiveDetailPanel(station);
     }
-  };
+};
+  
   
   
   
@@ -424,7 +407,7 @@ useEffect(() => {
           zoom: 15,
         });
   
-        addPinsToMap(stationsAlongRoute, mapInstanceRef.current, setActiveDetailPanel);
+        addPinsToMap(stationsAlongRoute, mapInstanceRef.current, setActiveDetailPanel, fetchRestaurantsForStation);
       } else {
         setError('No stations found along the selected route.');
       }

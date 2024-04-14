@@ -5,7 +5,8 @@ import { StationData } from './stations';
 export const addPinsToMap = (
     stations: StationData[], 
     map: atlas.Map, 
-    setActiveDetailPanel: (station: StationData | null) => void
+    setActiveDetailPanel: (station: StationData | null) => void,
+    fetchRestaurantsForStation: (station: StationData) => Promise<void> 
   ) => {
     const dataSource = new atlas.source.DataSource();
     map.sources.add(dataSource);
@@ -42,6 +43,7 @@ export const addPinsToMap = (
             if (properties && properties.stationData) {
                 const stationData: StationData = JSON.parse(properties.stationData);
                 setActiveDetailPanel(stationData);
+                fetchRestaurantsForStation(stationData);
             }
         }
     });
