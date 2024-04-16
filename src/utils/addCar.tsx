@@ -30,7 +30,7 @@ const AddCar: React.FC<AddCarProps> = ({ onUpdateCar }) => {
 
   // Fetch cars from the API
   useEffect(() => {
-    fetch('https://s24-final-back.azurewebsites.net/api/GetCars')
+    fetch('https://final-back.azurewebsites.net/api/GetCars')
       .then((response) => response.json())
       .then((data: Car[]) => {
         setCars(data);
@@ -96,7 +96,7 @@ const AddCar: React.FC<AddCarProps> = ({ onUpdateCar }) => {
         };
   
         try {
-          const response = await fetch('https://s24-final-back.azurewebsites.net/api/CreateUserCar', {
+          const response = await fetch('https://final-back.azurewebsites.net/api/CreateUserCar', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
