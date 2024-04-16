@@ -23,7 +23,7 @@ export type StationData = {
 // Asynchronously fetches station data based on a given location
 export async function fetchStations(location: string): Promise<StationData[]> {
   // URL to the API endpoint
-  const FUNCTION_URL = `https://s24-final-back.azurewebsites.net/api/fetchstations`;
+  const FUNCTION_URL = `https://final-back.azurewebsites.net/api/fetchstations`;
 
   try {
     // Make a POST request to the API endpoint with the location
@@ -53,7 +53,7 @@ export async function fetchStations(location: string): Promise<StationData[]> {
     const enrichedStations = stations.map(async (station: any) => {
       // Attempt to fetch the average rating for each station
       try {
-        const ratingResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/getrating', {
+        const ratingResponse = await axios.post('https://final-back.azurewebsites.net/api/getrating', {
           stationId: station.id,
         });
         // Update the station's averageRating with the fetched data

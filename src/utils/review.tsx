@@ -23,7 +23,7 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
   // Memoize fetchReviews using useCallback
   const fetchReviews = useCallback(async () => {
     try {
-      const response = await fetch('https://s24-final-back.azurewebsites.net/api/getreviews', {
+      const response = await fetch('https://final-back.azurewebsites.net/api/getreviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const Review: React.FC<ReviewProps> = ({ stationId, userEmail }) => {
     };
 
     try {
-      const response = await fetch('https://s24-final-back.azurewebsites.net/api/addrating', {
+      const response = await fetch('https://final-back.azurewebsites.net/api/addrating', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

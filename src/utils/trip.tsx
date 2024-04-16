@@ -11,7 +11,7 @@ export const fetchStationsAlongRoute = async ({
   linestring,
   distance,
 }: FetchStationsAlongRouteParams): Promise<StationData[]> => {
-  const FUNCTION_URL = `https://s24-final-back.azurewebsites.net/api/fetchstationsalongroute`;
+  const FUNCTION_URL = `https://final-back.azurewebsites.net/api/fetchstationsalongroute`;
 
   // Convert the LINESTRING into an array of points for simplification
   const points = linestring.slice(11, -1).split(', ').map(pair => {

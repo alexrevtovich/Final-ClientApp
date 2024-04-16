@@ -98,7 +98,7 @@ const Map: React.FC = () => {
         const stationsWithChargingInfo = await Promise.all(stationsData.map(async (station) => {
             try {
                 // Fetch sum of AC and DC values for the station
-                const sumResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/SumCharging', { StationId: station.id });
+                const sumResponse = await axios.post('https://final-back.azurewebsites.net/api/SumCharging', { StationId: station.id });
                 station.AC = sumResponse.data.ac || 0; // Adjust to match the response structure
                 station.DC = sumResponse.data.dc || 0;
                 station.chargingCount = sumResponse.data.chargingCount || 0; // Assuming you have chargingCount in the response, otherwise remove
@@ -132,7 +132,7 @@ const Map: React.FC = () => {
 useEffect(() => {
   // Establish the connection using HubConnectionBuilder
   const connection = new HubConnectionBuilder()
-    .withUrl("https://s24-final-back.azurewebsites.net/api", { // Correct endpoint
+    .withUrl("https://final-back.azurewebsites.net/api", { // Correct endpoint
       // Add any required configuration options here
     })
     .configureLogging(LogLevel.Information)
@@ -288,7 +288,7 @@ useEffect(() => {
 
   async function fetchRestaurantsForStation(station: StationData) {
     try {
-        const restaurantsResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/GetPOIs', {
+        const restaurantsResponse = await axios.post('https://final-back.azurewebsites.net/api/GetPOIs', {
             Latitude: station.latitude,
             Longitude: station.longitude,
         });
@@ -301,7 +301,7 @@ useEffect(() => {
 
   const handleDetailsClick = async (station: StationData) => {
     try {
-        const sumResponse = await axios.post('https://s24-final-back.azurewebsites.net/api/sumcharging', {
+        const sumResponse = await axios.post('https://final-back.azurewebsites.net/api/sumcharging', {
             StationId: station.id,
         });
         station.AC = sumResponse.data.ac || 0;
@@ -338,7 +338,7 @@ useEffect(() => {
         DC: activeDetailPanel.DC !== null ? 1 : 0
       };
   
-      const response = await axios.post('https://s24-final-back.azurewebsites.net/api/startcharging', payload);
+      const response = await axios.post('https://final-back.azurewebsites.net/api/startcharging', payload);
   
       console.log('Charging request successful:', response.data);
       // Display AC and DC values returned from the API
@@ -364,7 +364,7 @@ useEffect(() => {
         Email: sessionStorage.getItem('userEmail') || 'fake_user',
       };
   
-      const response = await axios.post('https://s24-final-back.azurewebsites.net/api/StopCharging', payload);
+      const response = await axios.post('https://final-back.azurewebsites.net/api/StopCharging', payload);
   
       console.log('Stop charging request successful:', response.data);
   

@@ -31,7 +31,7 @@ const Auth: React.FC = () => {
         };
     
         // Send the user data to your backend for processing
-        const fetchResponse = await fetch('https://s24-final-back.azurewebsites.net/api/AddUser', {
+        const fetchResponse = await fetch('https://final-back.azurewebsites.net/api/AddUser', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

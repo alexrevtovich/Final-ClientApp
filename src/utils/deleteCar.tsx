@@ -6,7 +6,7 @@ const deleteCar = async (carId: string) => {
   console.log('Sending payload:', payload); // This helps to verify the structure
 
   try {
-    const response = await axios.post('https://s24-final-back.azurewebsites.net/api/deleteusercar', payload, {
+    const response = await axios.post('https://final-back.azurewebsites.net/api/deleteusercar', payload, {
       headers: {
         'Content-Type': 'application/json', // Explicitly set Content-Type
       },

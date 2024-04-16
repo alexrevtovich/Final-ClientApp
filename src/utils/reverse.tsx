@@ -7,7 +7,7 @@ const reverseGeocode = async (coordinates: [number, number]): Promise<string> =>
       return '';
   }
 
-  const url = 'https://s24-final-back.azurewebsites.net/api/reversegeocode';
+  const url = 'https://final-back.azurewebsites.net/api/reversegeocode';
 
   try {
     const response = await fetch(url, {

@@ -12,7 +12,7 @@ interface RouteSegment {
 
 // Update to fix TypeScript implicit any error
 export const getRouteDirections = async (startCoords: Coordinates, endCoords: Coordinates): Promise<RouteSegment> => {
-    const response = await fetch('https://s24-final-back.azurewebsites.net/api/getroutedirections', {
+    const response = await fetch('https://final-back.azurewebsites.net/api/getroutedirections', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

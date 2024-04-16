@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const fetchCarInfo = async (uniqueId: string) => {
   try {
-    const response = await axios.post('https://s24-final-back.azurewebsites.net/api/GetCarByID', {
+    const response = await axios.post('https://final-back.azurewebsites.net/api/GetCarByID', {
       unique_id: uniqueId 
     });
     return response.data;

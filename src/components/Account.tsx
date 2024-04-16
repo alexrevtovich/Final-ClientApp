@@ -47,7 +47,7 @@ const Account: React.FC = () => {
   // SignalR within a React component or effect
   useEffect(() => {
     const connection = new HubConnectionBuilder()
-        .withUrl("https://s24-final-back.azurewebsites.net/api")
+        .withUrl("https://final-back.azurewebsites.net/api")
         .configureLogging(LogLevel.Information)
         .build();
   
@@ -194,7 +194,7 @@ const Account: React.FC = () => {
     } else {
       const payload = { email: userEmail, newUsername: newUsername.trim() };
       try {
-        const response = await fetch('https://s24-final-back.azurewebsites.net/api/updateusername', {
+        const response = await fetch('https://final-back.azurewebsites.net/api/updateusername', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -213,7 +213,7 @@ const Account: React.FC = () => {
 
   const setMainCar = async (email: string, mainCarId: string) => {
   try {
-    const response = await fetch('https://s24-final-back.azurewebsites.net/api/SetMainCar', {
+    const response = await fetch('https://final-back.azurewebsites.net/api/SetMainCar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -241,7 +241,7 @@ const Account: React.FC = () => {
 
 const getChargeLevel = async (email: string, mainCarId: string) => {
   try {
-    const response = await fetch('https://s24-final-back.azurewebsites.net/api/GetChargeLevel', {
+    const response = await fetch('https://final-back.azurewebsites.net/api/GetChargeLevel', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -262,7 +262,7 @@ const getChargeLevel = async (email: string, mainCarId: string) => {
 
 const handleEMPulse = async () => {
   try {
-    const response = await fetch('https://s24-final-back.azurewebsites.net/api/EMpulse', {
+    const response = await fetch('https://final-back.azurewebsites.net/api/EMpulse', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -287,7 +287,7 @@ const handleEMPulse = async () => {
 
 const handlePlus1to15 = async () => {
   try {
-    const response = await fetch('https://s24-final-back.azurewebsites.net/api/plus1to15', { // Ensure the URL is correct
+    const response = await fetch('https://final-back.azurewebsites.net/api/plus1to15', { // Ensure the URL is correct
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
