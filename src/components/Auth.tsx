@@ -5,7 +5,8 @@ import {jwtDecode} from 'jwt-decode'; // Ensure correct import for your use case
 // Declare the global google variable provided by the Google Identity Services library
 declare const google: any;
 
-const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '838062661118-eq4vps24e0qiqnkbi2in5d93540qgulf.apps.googleusercontent.com';
+
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
